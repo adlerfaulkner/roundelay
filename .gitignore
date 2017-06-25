@@ -6,6 +6,7 @@
 
 # Ignore bundler config.
 /.bundle
+/vendor/bundle
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
@@ -16,6 +17,16 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
+
+# TODO Comment out this rule if you are OK with secrets being uploaded to the repo
+config/initializers/secret_token.rb
+
+# dotenv
+# TODO Comment out this rule if environment variables can be committed
+.env
+
+# these should all be checked in to normalize the environment:
+# Gemfile.lock, .ruby-version, .ruby-gemset
 
 # Ignore Byebug command history file.
 .byebug_history
