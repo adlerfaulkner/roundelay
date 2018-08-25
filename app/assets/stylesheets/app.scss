@@ -1,0 +1,105 @@
+// Fill colors
+$white       : #FFFFFF;
+$ghost       : #FAFAFA;
+$snow        : #F9F9F9;
+$vapor       : #F6F6F6;
+$white-smoke : #F5F5F5;
+$silver      : #EFEFEF;
+$smoke       : #EEEEEE;
+$gainsboro   : #DDDDDD;
+$iron        : #CCCCCC;
+$base        : #AAAAAA;
+$aluminum    : #999999;
+$jumbo       : #888888;
+$monsoon     : #777777;
+$steel       : #666666;
+$charcoal    : #555555;
+$tuatara     : #444444;
+$oil         : #333333;
+$jet         : #222222;
+$black       : #000000;
+
+
+@mixin flexbox() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+@mixin justify-content($val) {
+ -webkit-box-pack: $val;
+   -moz-box-pack: $val;
+ -ms-flex-pack: $val;
+   -webkit-justify-content: $val;
+ justify-content: $val;
+}
+@mixin flex-direction($val) {
+ @if $val == column {
+   -webkit-box-orient:vertical;
+   -ms-box-orient:vertical;
+   -moz-box-orient:vertical;
+   box-orient:vertical;
+   -webkit-box-direction: normal;
+     -webkit-flex-direction: column;
+     -ms-flex-direction: column;
+   flex-direction: column;
+ } @else if $val == row-reverse {
+   -webkit-box-orient:horizontal;
+   -ms-box-orient:horizontal;
+   -moz-box-orient:horizontal;
+   box-orient:horizontal;
+   -webkit-box-direction: reverse;
+     -webkit-flex-direction: row-reverse;
+     -ms-flex-direction: row-reverse;
+   flex-direction: row-reverse;
+ } @else {
+   -webkit-box-orient:horizontal;
+   -ms-box-orient:horizontal;
+   -moz-box-orient:horizontal;
+   box-orient:horizontal;
+   -webkit-box-direction: normal;
+     -webkit-flex-direction: row;
+     -ms-flex-direction: row;
+   flex-direction: row;
+ }
+}
+@mixin align-items($val) {
+ -webkit-box-align: $val;
+ -moz-box-align: $val;
+ -ms-flex-align: $val;
+ -webkit-align-items: $val;
+ align-items: $val;
+}
+
+.body {
+  margin:0;
+  padding:0;
+}
+
+
+.header-bar {
+  margin: 0 auto;
+  max-width: 1000px;
+  height: 65px;
+  padding: 0 20px;
+  @include flexbox();
+  @include align-items(center);
+  position: relative;
+
+  .logo-container {
+    text-align: center;
+    position: absolute;
+    left: 0;
+    right:0;
+    top:0;
+    bottom:0;
+    @include flexbox();
+    @include align-items(center);
+    @include justify-content(center);
+
+    .site-nav-logo {
+      height: 35px;
+    }
+  }
+}
