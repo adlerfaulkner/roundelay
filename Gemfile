@@ -8,10 +8,11 @@ gem 'coffee-rails', '4.2.2'
 gem 'jquery-rails', '4.3.1'
 gem 'turbolinks',   '5.0.1'
 gem 'jbuilder',     '2.6.4'
-gem 'sorcery'
+gem 'sorcery',      '0.12.0'
+gem 'webpacker',    '3.5.5'
+gem 'react-rails',  '2.4.5'
 
 group :development, :test do
-
 	gem 'faker', '> 1.5.0'
 
   gem 'rspec-rails'
