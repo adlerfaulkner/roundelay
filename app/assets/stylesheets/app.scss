@@ -21,7 +21,7 @@ $black       : #000000;
 
 $font-stack  : "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $link-color : #d01257;
-$link-hover-color : darken(#d01257, 15%);
+$link-hover-color : darken($link-color, 10%);
 
 @mixin flexbox() {
   display: -webkit-box;
@@ -99,6 +99,15 @@ $link-hover-color : darken(#d01257, 15%);
   margin:0;
   padding:0;
 }
+* {
+	-webkit-font-smoothing: antialiased;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box; /* Firefox, other Gecko */
+	box-sizing: border-box; /* Opera/IE 8+ */
+}
+.spacer {
+  @include flex(1);
+}
 .base-font {
   font: {
     size: 14px;
@@ -111,6 +120,9 @@ $link-hover-color : darken(#d01257, 15%);
     cursor: pointer;
   }
 }
+.grey-link {
+  color:$monsoon !important;
+}
 .non-border-link {
   @extend .base-font;
   @extend .link;
@@ -118,6 +130,10 @@ $link-hover-color : darken(#d01257, 15%);
 
   &:hover {
     color: $link-hover-color;
+
+    &:hover {
+      color: $oil !important;
+    }
   }
 }
 .border-link {
@@ -125,7 +141,7 @@ $link-hover-color : darken(#d01257, 15%);
   @extend .link;
   border: 1px solid $link-color;
   color: $link-color;
-  padding: 8px 17px;
+  padding: 7px 17px;
   @include rounded-corners(4px);
 
   &:hover {
@@ -133,8 +149,21 @@ $link-hover-color : darken(#d01257, 15%);
     border-color: $link-hover-color;
   }
 }
+.fill-link {
+  @extend .base-font;
+  @extend .link;
+  background-color: $link-color;
+  color: white;
+  padding: 7px 17px;
+  @include rounded-corners(4px);
+
+  &:hover {
+    background-color: $link-hover-color;
+  }
+}
 
 .header-bar {
+  z-index: 700;
   margin: 0 auto;
   max-width: 1000px;
   height: 65px;
@@ -144,6 +173,7 @@ $link-hover-color : darken(#d01257, 15%);
   position: relative;
 
   .logo-container {
+    z-index: 1;
     text-align: center;
     position: absolute;
     left: 0;
@@ -158,11 +188,10 @@ $link-hover-color : darken(#d01257, 15%);
       height: 35px;
     }
   }
-  .spacer {
-    @include flex(1);
+  div:not(.logo-container) {
+    z-index: 2;
   }
   .login-wrapper {
-    z-index: 2;
     @include flexbox();
     @include align-items(center);
 
@@ -172,5 +201,101 @@ $link-hover-color : darken(#d01257, 15%);
     .signup-button {
 
     }
+  }
+}
+
+#modal-root {
+  position: fixed;
+  left:0;
+  top:0;
+  height:0;
+  width:0;
+
+  .modal-screen {
+    z-index: 600;
+    position: fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    min-height: 100%;
+    padding: 30px 0;
+    background-color: white;
+    @include flexbox();
+    @include align-items(center);
+    @include justify-content(center);
+    @include flex-direction(column);
+    overflow-y: auto;
+  }
+}
+
+
+.form-header {
+  font: {
+    size: 32px;
+    weight:500;
+    family:$font-stack;
+  }
+  color:black;
+  margin: 1.5em;
+  text-align: center;
+}
+.account-form {
+
+  .form-input-wrapper {
+    margin-bottom: 23px;
+    position: relative;
+  }
+  input:active + label, input:focus + label, label.up {
+    top: -16px;
+    font-size: 12px;
+  }
+
+  label {
+    @extend .base-font;
+    font-size: 15px;
+    color: lighten(#d01257, 9%);
+    position: absolute;
+    left:20px;
+    top:14px;
+    transition: all .2s ease-in-out;
+    pointer-events: none;
+  }
+
+  input {
+    width:340px;
+    @extend .base-font;
+    padding: 14px 20px;
+    @include rounded-corners(7px);
+    border:none;
+    outline: none;
+    font-size: 15px;
+
+    &[type='submit'] {
+      @extend .fill-link;
+      height:45px;
+      font-weight: 500 !important;
+    }
+
+    &:not([type='submit']) {
+      background-color: lighten(#ffcee4, 4%);
+      color: black;
+
+      &:focus {
+        background-color: darken(#ffcee4, 4%);
+      }
+    }
+  }
+}
+.form-footer-buttons {
+  @include flexbox();
+  @include align-items(center);
+  width: 340px;
+  padding: 15px 0;
+
+  span {
+    @extend .base-font;
+    color:$aluminum;
+    margin-right: 6px;
   }
 }

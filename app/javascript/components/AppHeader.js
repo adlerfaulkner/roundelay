@@ -5,9 +5,18 @@ import Avatar from "./Avatar.js"
 class AppHeader extends React.Component {
   constructor(props) {
     super(props);
+    this.handleLoginClick = this.handleLoginClick.bind(this);
+    this.handleSignUpClick = this.handleSignUpClick.bind(this);
+  }
+  handleLoginClick() {
+    this.props.onLoginClick();
+  }
+  handleSignUpClick() {
+    this.props.onSignUpClick();
   }
   render () {
     const currentUser = this.props.currentUser;
+    const modalOpen = this.props.modalOpen;
 
     return (
       <div className='header-bar'>
@@ -25,18 +34,22 @@ class AppHeader extends React.Component {
           </a>
         </div>
         <div className='spacer'></div>
-        <div className='login-wrapper'>
-          { currentUser ?
-            <React.Fragment>
-              <Avatar user={currentUser} />
-            </React.Fragment>
-            :
-            <React.Fragment>
-              <div className='login-button non-border-link' >Log in</div>
-              <div className='signup-button border-link' >Sign Up</div>
-            </React.Fragment>
-          }
-        </div>
+        { modalOpen ?
+          <div className='close-button non-border-link' onClick={this.props.onCloseButtonClick}>Close</div>
+          :
+          <div className='login-wrapper'>
+            { currentUser ?
+              <React.Fragment>
+                <Avatar user={currentUser} />
+              </React.Fragment>
+              :
+              <React.Fragment>
+                <div className='login-button non-border-link' onClick={this.handleLoginClick}>Log In</div>
+                <div className='signup-button fill-link' onClick={this.handleSignUpClick}>Sign Up</div>
+              </React.Fragment>
+            }
+          </div>
+        }
       </div>
     );
   }
