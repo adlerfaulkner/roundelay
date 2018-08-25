@@ -1,8 +1,14 @@
 import React from "react"
 import PropTypes from "prop-types"
+import Avatar from "./Avatar.js"
 
 class AppHeader extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render () {
+    const currentUser = this.props.currentUser;
+
     return (
       <div className='header-bar'>
         <div className='logo-container'>
@@ -17,6 +23,19 @@ class AppHeader extends React.Component {
                 </g>
             </svg>
           </a>
+        </div>
+        <div className='spacer'></div>
+        <div className='login-wrapper'>
+          { currentUser ?
+            <React.Fragment>
+              <Avatar user={currentUser} />
+            </React.Fragment>
+            :
+            <React.Fragment>
+              <div className='login-button non-border-link' >Log in</div>
+              <div className='signup-button border-link' >Sign Up</div>
+            </React.Fragment>
+          }
         </div>
       </div>
     );

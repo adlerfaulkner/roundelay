@@ -19,6 +19,9 @@ $oil         : #333333;
 $jet         : #222222;
 $black       : #000000;
 
+$font-stack  : "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$link-color : #d01257;
+$link-hover-color : darken(#d01257, 15%);
 
 @mixin flexbox() {
   display: -webkit-box;
@@ -71,12 +74,65 @@ $black       : #000000;
  -webkit-align-items: $val;
  align-items: $val;
 }
+@mixin flex-wrap($value) {
+  -webkit-box-flex-wrap: $value;
+  -moz-box-flex-wrap:  $value;
+  -webkit-flex-wrap:  $value;
+  -ms-flex-wrap:  $value;
+  flex-wrap:  $value;
+}
+@mixin flex($value) {
+  -webkit-box-flex: $value;
+  -moz-box-flex:  $value;
+  -webkit-flex:  $value;
+  -ms-flex:  $value;
+  flex:  $value;
+}
+@mixin rounded-corners($radius) {
+	-webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  border-radius: $radius;
+}
 
 .body {
   margin:0;
   padding:0;
 }
+.base-font {
+  font: {
+    size: 14px;
+    weight:400;
+    family: $font-stack;
+  }
+}
+.link {
+  &:hover {
+    cursor: pointer;
+  }
+}
+.non-border-link {
+  @extend .base-font;
+  @extend .link;
+  color: $link-color;
 
+  &:hover {
+    color: $link-hover-color;
+  }
+}
+.border-link {
+  @extend .base-font;
+  @extend .link;
+  border: 1px solid $link-color;
+  color: $link-color;
+  padding: 8px 17px;
+  @include rounded-corners(4px);
+
+  &:hover {
+    color: $link-hover-color;
+    border-color: $link-hover-color;
+  }
+}
 
 .header-bar {
   margin: 0 auto;
@@ -100,6 +156,21 @@ $black       : #000000;
 
     .site-nav-logo {
       height: 35px;
+    }
+  }
+  .spacer {
+    @include flex(1);
+  }
+  .login-wrapper {
+    z-index: 2;
+    @include flexbox();
+    @include align-items(center);
+
+    .login-button {
+      margin-right: 17px;
+    }
+    .signup-button {
+
     }
   }
 }
