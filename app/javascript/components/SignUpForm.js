@@ -9,7 +9,9 @@ class SignUpForm extends React.Component {
       name: "",
       email: "",
       password: "",
-      passwordConfirmation: ""
+      password_confirmation: "",
+      errors: {},
+      loading: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,19 +32,48 @@ class SignUpForm extends React.Component {
   }
 
   handleSubmit(event) {
-    alert('A name was submitted: ' + this.state.email);
+    const self = this;
     event.preventDefault();
+    const reqData = {
+      name: this.state.name,
+      email: this.state.email,
+      password: this.state.password,
+      password_confirmation: this.state.password_confirmation
+    };
+    this.setState({loading: true});
+    this._signupRequest = $.post({
+      url: '/api/v1/users',
+      data: reqData,
+      dataType: 'JSON',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(respData) {
+        self._signupRequest = null;
+        self.setState({loading: false});
+        self.props.onSignUpComplete(respData);
+      },
+      error: function(xhr, status) {
+        self._signupRequest = null;
+        const respData = xhr.responseJSON;
+        self.setState({loading: false, errors: respData});
+      }
+    });
+
   }
 
   render() {
+    const errors = this.state.errors;
+
     return (
       <React.Fragment>
+        { this.state.loading && <div className='loading-screen'><div className='spinner'></div></div>}
         <div className='form-header'>Sign Up</div>
         <form onSubmit={this.handleSubmit} className='signup-form account-form modal-form'>
-          <FormInput label='Name' name='name' value={this.state.name} onInputChange={this.handleInputChange} />
-          <FormInput label='Email' name='email' value={this.state.email} onInputChange={this.handleInputChange} />
-          <FormInput label='Password' name='password' value={this.state.password} onInputChange={this.handleInputChange} />
-          <FormInput label='Confirm your password' name='passwordConfirmation' value={this.state.passwordConfirmation} onInputChange={this.handleInputChange} />
+          <FormInput label='Name' name='name' errors={errors['name']} value={this.state.name} onInputChange={this.handleInputChange} />
+          <FormInput label='Email' name='email' errors={errors['email']} value={this.state.email} onInputChange={this.handleInputChange} />
+          <FormInput label='Password' name='password' errors={errors['password']} value={this.state.password} onInputChange={this.handleInputChange} />
+          <FormInput label='Confirm your password' errors={errors['password_confirmation']} name='password_confirmation' value={this.state.password_confirmation} onInputChange={this.handleInputChange} />
           <input type="submit" value="Sign Up" />
         </form>
         <div className='form-footer-buttons'>

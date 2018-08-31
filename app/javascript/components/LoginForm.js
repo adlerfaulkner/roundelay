@@ -7,7 +7,8 @@ class LoginForm extends React.Component {
     super(props);
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      loading: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,8 +29,31 @@ class LoginForm extends React.Component {
   }
 
   handleSubmit(event) {
-    alert('A name was submitted: ' + this.state.email);
     event.preventDefault();
+    const self = this;
+    const reqData = {
+      email: this.state.email,
+      password: this.state.password
+    };
+    this.setState({loading: true});
+    this._loginRequest = $.post({
+      url: '/api/v1/login',
+      data: reqData,
+      dataType: 'JSON',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(respData) {
+        self._loginRequest = null;
+        self.setState({loading: false});
+        self.props.onLoginComplete(respData);
+      },
+      error: function(xhr, status) {
+        self._loginRequest = null;
+        const respData = xhr.responseJSON;
+        self.setState({loading: false});
+      }
+    });
   }
 
   render() {

@@ -11,6 +11,8 @@ class FormInput extends React.Component {
     const label = this.props.label;
     const name = this.props.name;
     const value = this.props.value;
+    const errors = this.props.errors;
+
 
     let classes = "";
     if (value.length > 0) {
@@ -19,7 +21,8 @@ class FormInput extends React.Component {
 
     return (
       <div className='form-input-wrapper'>
-        <input type={name == 'password' || name == 'passwordConfirmation' ? 'password' : 'text'} name={name} id={name} value={value} onChange={this.props.onInputChange} />
+        { errors && errors.length > 0 && <div className='errors' error={errors[errors.length-1]}></div> }
+        <input type={name == 'password' || name == 'password_confirmation' ? 'password' : 'text'} name={name} id={name} value={value} onChange={this.props.onInputChange} />
         <label className={classes} htmlFor={name}>{ label }</label>
       </div>
     )

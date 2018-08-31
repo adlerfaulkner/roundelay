@@ -94,6 +94,33 @@ $link-hover-color : darken($link-color, 10%);
   -ms-border-radius: $radius;
   border-radius: $radius;
 }
+@mixin box-shadow($top, $left, $blur, $color, $inset: false) {
+  @if $inset {
+    -webkit-box-shadow:inset $top $left $blur $color !important;
+    -moz-box-shadow:inset $top $left $blur $color !important;
+    box-shadow:inset $top $left $blur $color !important;
+  } @else {
+    -webkit-box-shadow: $top $left $blur $color !important;
+    -moz-box-shadow: $top $left $blur $color !important;
+    box-shadow: $top $left $blur $color !important;
+  }
+}
+@-webkit-keyframes rotation {
+   from {-webkit-transform: rotate(0deg);}
+   to {-webkit-transform: rotate(359deg);}
+}
+@-moz-keyframes rotation {
+   from {-moz-transform: rotate(0deg);}
+   to {-moz-transform: rotate(359deg);}
+}
+@-o-keyframes rotation {
+   from {-o-transform: rotate(0deg);}
+   to {-o-transform: rotate(359deg);}
+}
+@keyframes rotation {
+   from {transform: rotate(0deg);}
+   to {transform: rotate(359deg);}
+}
 
 .body {
   margin:0;
@@ -104,6 +131,9 @@ $link-hover-color : darken($link-color, 10%);
 	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 	-moz-box-sizing: border-box; /* Firefox, other Gecko */
 	box-sizing: border-box; /* Opera/IE 8+ */
+}
+a {
+  text-decoration: none;
 }
 .spacer {
   @include flex(1);
@@ -122,6 +152,10 @@ $link-hover-color : darken($link-color, 10%);
 }
 .grey-link {
   color:$monsoon !important;
+
+  &:hover {
+    color: $oil !important;
+  }
 }
 .non-border-link {
   @extend .base-font;
@@ -130,10 +164,6 @@ $link-hover-color : darken($link-color, 10%);
 
   &:hover {
     color: $link-hover-color;
-
-    &:hover {
-      color: $oil !important;
-    }
   }
 }
 .border-link {
@@ -195,12 +225,21 @@ $link-hover-color : darken($link-color, 10%);
     @include flexbox();
     @include align-items(center);
 
-    .login-button {
+    .login-button, .new-button {
       margin-right: 17px;
     }
-    .signup-button {
+  }
+}
 
-    }
+.user-avatar {
+  @extend .base-font;
+  @extend .link;
+  color: $steel;
+  height:30px;
+  padding-top: 6px;
+
+  &:hover {
+    color: $oil;
   }
 }
 
@@ -227,12 +266,51 @@ $link-hover-color : darken($link-color, 10%);
     @include flex-direction(column);
     overflow-y: auto;
   }
+  .loading-screen {
+    z-index: 800;
+    position: fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background-color: rgba(255,255,255,0.6);
+    @include flexbox();
+    @include align-items(center);
+    @include justify-content(center);
+
+    .spinner {
+      position: relative;
+      height:16px;
+      width:16px;
+      -webkit-animation: rotation 0.7s infinite linear;
+      -moz-animation: rotation 0.7s infinite linear;
+      -o-animation: rotation 0.7s infinite linear;
+      animation: rotation 0.7s infinite linear;
+      border:3px solid transparent;
+      border-radius:100%;
+
+      &:before {
+        content:"";
+        display:block;
+        position:absolute;
+        left:-3px;
+        top:-3px;
+        height:100%;
+        width:100%;
+        border-top:3px solid $oil;
+        border-left:3px solid $oil;
+        border-bottom:3px solid transparent;
+        border-right:3px solid transparent;
+        border-radius:100%;
+      }
+    }
+  }
 }
 
 
 .form-header {
   font: {
-    size: 32px;
+    size: 30px;
     weight:500;
     family:$font-stack;
   }
@@ -249,6 +327,37 @@ $link-hover-color : darken($link-color, 10%);
   input:active + label, input:focus + label, label.up {
     top: -16px;
     font-size: 12px;
+  }
+  .errors {
+    position: absolute;
+    left: 50%;
+    top:0px;
+    width:0px;
+    overflow: visible;
+    @include flexbox();
+    @include align-items(center);
+    @include flex-direction(column);
+
+    &:before {
+      @include rounded-corners(3px);
+      color: #9F6000;
+      background-color: #FEEFB3;
+      @extend .base-font;
+      padding: 4px 8px;
+      position: absolute;
+      bottom: 6px;
+      white-space: nowrap;
+      content: attr(error);
+    }
+    &:after {
+      border: solid;
+	    border-color: #FEEFB3 transparent;
+	    border-width: 6px 6px 0 6px;
+      position: absolute;
+      bottom: 0;
+	    content: "";
+	    z-index: 99;
+    }
   }
 
   label {
@@ -278,11 +387,14 @@ $link-hover-color : darken($link-color, 10%);
     }
 
     &:not([type='submit']) {
-      background-color: lighten(#ffcee4, 4%);
+      background-color: lighten(#ffcee4, 5%);
       color: black;
 
+      &:hover {
+        background-color: lighten(#ffcee4, 2%);
+      }
       &:focus {
-        background-color: darken(#ffcee4, 4%);
+        background-color: darken(#ffcee4, 3%);
       }
     }
   }
@@ -297,5 +409,39 @@ $link-hover-color : darken($link-color, 10%);
     @extend .base-font;
     color:$aluminum;
     margin-right: 6px;
+  }
+}
+.dropdown-container {
+  position: relative;
+  outline: none;
+
+  .dropdown-button {
+
+  }
+  .dropdown {
+    position: absolute;
+    top:100%;
+    min-width: 100%;
+    padding: 5px 0;
+    background-color: white;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0 1px rgba(0,0,0,.35);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0 1px rgba(0,0,0,.35);
+    box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0 1px rgba(0,0,0,.35);
+    @include rounded-corners(4px);
+
+
+    .dropdown-option {
+      width:100%;
+      min-width: 100%;
+      display: block;
+      padding: 5px 12px;
+      @extend .base-font;
+      color:$steel;
+
+      &:hover {
+        background-color: $vapor;
+        color: $oil;
+      }
+    }
   }
 }

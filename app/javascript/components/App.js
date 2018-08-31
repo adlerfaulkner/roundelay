@@ -16,6 +16,9 @@ class App extends React.Component {
     this.openSignUpModal = this.openSignUpModal.bind(this);
     this.openLoginModal = this.openLoginModal.bind(this);
     this.closeModals = this.closeModals.bind(this);
+    this.loginUser = this.loginUser.bind(this);
+    this.createNewRecipe = this.createNewRecipe.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   openSignUpModal() {
@@ -27,6 +30,27 @@ class App extends React.Component {
   closeModals() {
     this.setState({loginModal: false, signUpModal: false});
   }
+  createNewRecipe() {
+    console.log('create new recipe')
+  }
+  logout() {
+    this._logoutRequest = $.ajax({
+      url: '/api/v1/logout',
+      dataType: 'JSON',
+      method: 'DELETE',
+      success: function(respData) {
+        $('meta[name="csrf-token"]').attr('content', respData.csrf_token);
+      }
+    });
+    this.setState({ currentUser: null });
+  }
+  loginUser(userData) {
+    this.setState({
+      currentUser: userData,
+      loginModal: false,
+      signUpModal: false
+    });
+  }
 
   render () {
     const currentUser = this.state.currentUser;
@@ -36,13 +60,16 @@ class App extends React.Component {
     return (
       <React.Fragment>
         <div>
-          <AppHeader currentUser={currentUser} onCloseButtonClick={this.closeModals} onSignUpClick={this.openSignUpModal} onLoginClick={this.openLoginModal} modalOpen={signUpModal || loginModal}/>
+          <AppHeader currentUser={currentUser} onCloseButtonClick={this.closeModals}
+            onSignUpClick={this.openSignUpModal} onLoginClick={this.openLoginModal}
+            onNewRecipeClick={this.createNewRecipe} onLogoutClick={this.logout}
+            accountModalOpen={signUpModal || loginModal}/>
         </div>
         { loginModal &&
-          <Modal><LoginForm onSignUpButtonClick={this.openSignUpModal}/></Modal>
+          <Modal><LoginForm onSignUpButtonClick={this.openSignUpModal} onLoginComplete={this.loginUser}/></Modal>
         }
         { signUpModal &&
-          <Modal><SignUpForm onLoginButtonClick={this.openLoginModal}/></Modal>
+          <Modal><SignUpForm onLoginButtonClick={this.openLoginModal} onSignUpComplete={this.loginUser}/></Modal>
         }
       </React.Fragment>
     );
