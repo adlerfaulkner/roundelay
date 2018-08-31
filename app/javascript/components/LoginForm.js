@@ -59,6 +59,7 @@ class LoginForm extends React.Component {
   render() {
     return (
       <React.Fragment>
+        { this.state.loading && <div className='loading-screen'><div className='spinner'></div></div>}
         <div className='form-header'>Log In</div>
         <form onSubmit={this.handleSubmit} className='login-form account-form modal-form'>
           <FormInput label='Email' name='email' value={this.state.email} onInputChange={this.handleInputChange} />

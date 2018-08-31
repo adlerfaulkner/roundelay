@@ -32,6 +32,7 @@ class App extends React.Component {
   }
   createNewRecipe() {
     console.log('create new recipe')
+    // TODO
   }
   logout() {
     this._logoutRequest = $.ajax({
