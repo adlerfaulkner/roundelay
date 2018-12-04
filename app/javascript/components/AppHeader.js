@@ -51,7 +51,7 @@ class AppHeader extends React.Component {
         loginButtons = (
           <React.Fragment>
             <a href='/login' className='login-button non-border-link' onClick={this.handleLoginClick}>Log In</a>
-            <a href='/signup' className='signup-button fill-link' onClick={this.handleSignUpClick}>Sign Up</a>
+            <a href='/signup' className='signup-button border-link' onClick={this.handleSignUpClick}>Sign Up</a>
           </React.Fragment>
         )
       }

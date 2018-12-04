@@ -145,6 +145,17 @@ a {
     family: $font-stack;
   }
 }
+.title-font {
+  font: {
+    size: 48px;
+    weight:500;
+    family: $font-stack;
+  }
+  color: $oil;
+}
+.contenteditable {
+  outline: none;
+}
 .link {
   &:hover {
     cursor: pointer;
@@ -234,7 +245,7 @@ a {
 .user-avatar {
   @extend .base-font;
   @extend .link;
-  color: $steel;
+  color: $oil;
   height:30px;
   padding-top: 6px;
 
@@ -306,8 +317,6 @@ a {
     }
   }
 }
-
-
 .form-header {
   font: {
     size: 30px;
@@ -436,12 +445,43 @@ a {
       display: block;
       padding: 5px 12px;
       @extend .base-font;
-      color:$steel;
+      color:$oil;
+      white-space: nowrap;
 
       &:hover {
         background-color: $vapor;
         color: $oil;
       }
+    }
+  }
+}
+.page-width {
+  margin: 0 auto;
+  min-width: 400px;
+  max-width: 850px;
+  width:85%;
+}
+.recipe-editor {
+  padding-top: 100px;
+  padding-bottom: calc(50vh - 100px);
+
+  .title-container {
+    position: relative;
+    width:100%;
+
+    .title-editor, .title-placeholder {
+      @extend .title-font;
+    }
+    .title-editor {
+      position: relative;
+      z-index: 1;
+    }
+    .title-placeholder {
+      z-index: 0;
+      color: $iron;
+      position: absolute;
+      top: 0px;
+      left: 0px;
     }
   }
 }

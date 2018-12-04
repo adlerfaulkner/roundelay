@@ -4,6 +4,7 @@ import AppHeader from "./AppHeader.js"
 import Modal from "./Modal.js"
 import LoginForm from "./LoginForm.js"
 import SignUpForm from "./SignUpForm.js"
+import RecipeEditor from "./RecipeEditor.js"
 
 class App extends React.Component {
   constructor(props) {
@@ -11,7 +12,8 @@ class App extends React.Component {
     this.state = {
       currentUser: this.props.currentUser,
       signUpModal: false,
-      loginModal: false
+      loginModal: false,
+      editRecipe: null
     };
     this.openSignUpModal = this.openSignUpModal.bind(this);
     this.openLoginModal = this.openLoginModal.bind(this);
@@ -31,8 +33,15 @@ class App extends React.Component {
     this.setState({loginModal: false, signUpModal: false});
   }
   createNewRecipe() {
-    console.log('create new recipe')
-    // TODO
+    const newRecipe = {
+      title: "",
+      description: "",
+      ingredients: [],
+      steps: [],
+      creator: this.props.currentUser,
+      postedBy: this.props.currentUser
+    }
+    this.setState({ editRecipe: newRecipe });
   }
   logout() {
     this._logoutRequest = $.ajax({
@@ -54,9 +63,7 @@ class App extends React.Component {
   }
 
   render () {
-    const currentUser = this.state.currentUser;
-    const signUpModal = this.state.signUpModal;
-    const loginModal = this.state.loginModal;
+    const { currentUser, signUpModal, loginModal, editRecipe } = this.state;
 
     return (
       <React.Fragment>
@@ -71,6 +78,9 @@ class App extends React.Component {
         }
         { signUpModal &&
           <Modal><SignUpForm onLoginButtonClick={this.openLoginModal} onSignUpComplete={this.loginUser}/></Modal>
+        }
+        { editRecipe != null &&
+          <Modal><RecipeEditor recipe={editRecipe}/></Modal>
         }
       </React.Fragment>
     );
