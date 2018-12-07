@@ -147,8 +147,16 @@ a {
 }
 .title-font {
   font: {
-    size: 48px;
+    size: 46px;
     weight:500;
+    family: $font-stack;
+  }
+  color: $oil;
+}
+.description-font {
+  font: {
+    size: 18px;
+    weight:400;
     family: $font-stack;
   }
   color: $oil;
@@ -465,23 +473,29 @@ a {
   padding-top: 100px;
   padding-bottom: calc(50vh - 100px);
 
-  .title-container {
+  .contenteditable-container {
     position: relative;
     width:100%;
 
     .title-editor, .title-placeholder {
       @extend .title-font;
     }
-    .title-editor {
+    .description-editor, .description-placeholder {
+      @extend .description-font;
+    }
+    .contenteditable {
       position: relative;
       z-index: 1;
     }
-    .title-placeholder {
+    .contenteditable-placeholder {
       z-index: 0;
       color: $iron;
       position: absolute;
       top: 0px;
       left: 0px;
     }
+  }
+  .description-container {
+    margin-top: 30px;
   }
 }

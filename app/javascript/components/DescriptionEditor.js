@@ -34,19 +34,19 @@ function replaceCaret(el: HTMLElement) {
 /**
  * A simple component for an html element with editable contents.
  */
-class TitleEditor extends React.Component {
+class DescriptionEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.lastHtml = this.props.title;
+    this.lastHtml = this.props.description;
     this.el = typeof this.props.innerRef === 'function' ? { current: null } : React.createRef();
   }
 
   getEl = () => (this.props.innerRef && typeof this.props.innerRef !== 'function' ? this.props.innerRef : this.el).current;
 
   render() {
-    const { title, innerRef } = this.props;
+    const { description, innerRef } = this.props;
     let placeholderStyle;
-    if (title.length > 0) {
+    if (description.length > 0) {
       placeholderStyle = { display: 'none' }
     }
 
@@ -56,7 +56,7 @@ class TitleEditor extends React.Component {
     } : innerRef || this.el;
 
     return (
-      <div className='title-editor contenteditable' ref={ref} contentEditable={true} onInput={this.emitChange} onBlur={this.props.onBlur || this.emitChange} dangerouslySetInnerHTML={{ __html: title }}></div>
+      <div className='description-editor contenteditable' ref={ref} contentEditable={true} onInput={this.emitChange} onBlur={this.props.onBlur || this.emitChange} dangerouslySetInnerHTML={{ __html: description }}></div>
     )
   }
 
@@ -71,7 +71,7 @@ class TitleEditor extends React.Component {
     if (!el) return true;
 
     // ...or if html really changed... (programmatically, not by user edit)
-    if (normalizeHtml(nextProps.title) !== normalizeHtml(el.innerHTML)) {
+    if (normalizeHtml(nextProps.description) !== normalizeHtml(el.innerHTML)) {
       return true;
     }
     return false;
@@ -83,8 +83,8 @@ class TitleEditor extends React.Component {
 
     // Perhaps React (whose VDOM gets outdated because we often prevent
     // rerendering) did not update the DOM. So we update it manually now.
-    if (this.props.title !== el.innerHTML) {
-      el.innerHTML = this.lastHtml = this.props.title;
+    if (this.props.description !== el.innerHTML) {
+      el.innerHTML = this.lastHtml = this.props.description;
     }
     replaceCaret(el);
   }
@@ -108,7 +108,7 @@ class TitleEditor extends React.Component {
   }
 
   static propTypes = {
-    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     innerRef: PropTypes.oneOfType([
@@ -119,10 +119,10 @@ class TitleEditor extends React.Component {
 }
 
 export interface Props {
-  title: string,
+  description: string,
   onChange?: Function,
   onBlur?: Function,
   innerRef?: React.RefObject<HTMLElement> | Function
 }
 
-export default TitleEditor;
+export default DescriptionEditor;
