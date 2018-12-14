@@ -19,7 +19,8 @@ $oil         : #333333;
 $jet         : #222222;
 $black       : #000000;
 
-$font-stack  : "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$font-stack  : "Helvetica Neue", Helvetica, Arial, sans-serif;
+$body-font-stack : Georgia, serif;
 $link-color : #d01257;
 $link-hover-color : darken($link-color, 10%);
 
@@ -138,6 +139,14 @@ a {
 .spacer {
   @include flex(1);
 }
+.clear-float {
+	&:after {
+		content: "";
+		display: block;
+		clear:both;
+    height: 0px;
+	}
+}
 .base-font {
   font: {
     size: 14px;
@@ -155,9 +164,9 @@ a {
 }
 .description-font {
   font: {
-    size: 18px;
+    size: 19px;
     weight:400;
-    family: $font-stack;
+    family: $body-font-stack;
   }
   color: $oil;
 }
@@ -281,9 +290,12 @@ a {
     background-color: white;
     @include flexbox();
     @include align-items(center);
-    @include justify-content(center);
     @include flex-direction(column);
     overflow-y: auto;
+
+    &.centered {
+      @include justify-content(center);
+    }
   }
   .loading-screen {
     z-index: 800;
@@ -470,7 +482,7 @@ a {
   width:85%;
 }
 .recipe-editor {
-  padding-top: 100px;
+  padding-top: 200px;
   padding-bottom: calc(50vh - 100px);
 
   .contenteditable-container {
@@ -496,6 +508,49 @@ a {
     }
   }
   .description-container {
-    margin-top: 30px;
+    margin-top: 25px;
+    margin-bottom: 70px;
+    line-height: 1.45em;
+    font-style: italic;
+  }
+  .section {
+    margin-bottom: 70px;
+  }
+  .section-list {
+    min-height: 100px;
+  }
+  .ingredients-section {
+    left: 0;
+    right:0;
+    margin:auto;
+    width:55%;
+    min-width: 350px;
+    max-width: 700px;
+    margin-bottom: 70px;
+  }
+  .ingredient-container {
+    margin-bottom: 10px;
+  }
+  .ingredient-container, .step-container {
+    @extend .description-font;
+    line-height: 1.45em;
+    position: relative;
+
+    .list-item-editor {
+      min-height: 20px;
+      width: 100%;
+    }
+  }
+  .step-container {
+    margin-bottom: 15px;
+
+    .contenteditable-placeholder, .contenteditable {
+      padding-left: 35px;
+    }
+    .step-number {
+      position: absolute;
+      top: 0;
+      left:0;
+    }
   }
 }

@@ -45,10 +45,6 @@ class TitleEditor extends React.Component {
 
   render() {
     const { title, innerRef } = this.props;
-    let placeholderStyle;
-    if (title.length > 0) {
-      placeholderStyle = { display: 'none' }
-    }
 
     const ref = typeof innerRef === 'function' ? (current: HTMLElement) => {
       innerRef(current)
@@ -56,7 +52,7 @@ class TitleEditor extends React.Component {
     } : innerRef || this.el;
 
     return (
-      <div className='title-editor contenteditable' ref={ref} contentEditable={true} onInput={this.emitChange} onBlur={this.props.onBlur || this.emitChange} dangerouslySetInnerHTML={{ __html: title }}></div>
+      <div className='title-editor contenteditable' ref={ref} contentEditable={true} onInput={this.emitChange} onBlur={this.props.onBlur || this.emitChange} onKeyDown={this.handleKeyDown} dangerouslySetInnerHTML={{ __html: title }}></div>
     )
   }
 
@@ -105,6 +101,18 @@ class TitleEditor extends React.Component {
       this.props.onChange(evt);
     }
     this.lastHtml = html;
+  }
+  handleKeyDown = (originalEvt: React.SyntheticEvent<any>) => {
+    if (originalEvt.which == 13) {
+      originalEvt.preventDefault();
+      originalEvt.stopPropagation();
+      const el = this.getEl();
+      if (!el) return;
+
+      el.blur();
+      this.props.onReturn();
+      return false;
+    }
   }
 
   static propTypes = {

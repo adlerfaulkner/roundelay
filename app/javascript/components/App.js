@@ -36,8 +36,8 @@ class App extends React.Component {
     const newRecipe = {
       title: "",
       description: "",
-      ingredients: [],
-      steps: [],
+      ingredients: [{ text: "", innerRef: React.createRef() }],
+      steps: [{ text: "", innerRef: React.createRef() }],
       creator: this.props.currentUser,
       postedBy: this.props.currentUser
     }
@@ -74,10 +74,10 @@ class App extends React.Component {
             accountModalOpen={signUpModal || loginModal}/>
         </div>
         { loginModal &&
-          <Modal><LoginForm onSignUpButtonClick={this.openSignUpModal} onLoginComplete={this.loginUser}/></Modal>
+          <Modal centered><LoginForm onSignUpButtonClick={this.openSignUpModal} onLoginComplete={this.loginUser}/></Modal>
         }
         { signUpModal &&
-          <Modal><SignUpForm onLoginButtonClick={this.openLoginModal} onSignUpComplete={this.loginUser}/></Modal>
+          <Modal centered><SignUpForm onLoginButtonClick={this.openLoginModal} onSignUpComplete={this.loginUser}/></Modal>
         }
         { editRecipe != null &&
           <Modal><RecipeEditor recipe={editRecipe}/></Modal>

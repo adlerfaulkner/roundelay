@@ -34,17 +34,17 @@ function replaceCaret(el: HTMLElement) {
 /**
  * A simple component for an html element with editable contents.
  */
-class DescriptionEditor extends React.Component {
+class ListItemEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.lastHtml = this.props.description;
+    this.lastHtml = this.props.text;
     this.el = typeof this.props.innerRef === 'function' ? { current: null } : React.createRef();
   }
 
   getEl = () => (this.props.innerRef && typeof this.props.innerRef !== 'function' ? this.props.innerRef : this.el).current;
 
   render() {
-    const { description, innerRef } = this.props;
+    const { text, innerRef } = this.props;
 
     const ref = typeof innerRef === 'function' ? (current: HTMLElement) => {
       innerRef(current)
@@ -52,12 +52,13 @@ class DescriptionEditor extends React.Component {
     } : innerRef || this.el;
 
     return (
-      <div className='description-editor contenteditable' ref={ref}
+      <div className='list-item-editor contenteditable'
+        ref={ref}
         contentEditable={true}
         onInput={this.emitChange}
         onBlur={this.props.onBlur || this.emitChange}
         onKeyDown={this.handleKeyDown}
-        dangerouslySetInnerHTML={{ __html: description }}></div>
+        dangerouslySetInnerHTML={{ __html: text }}></div>
     )
   }
 
@@ -72,7 +73,7 @@ class DescriptionEditor extends React.Component {
     if (!el) return true;
 
     // ...or if html really changed... (programmatically, not by user edit)
-    if (normalizeHtml(nextProps.description) !== normalizeHtml(el.innerHTML)) {
+    if (normalizeHtml(nextProps.text) !== normalizeHtml(el.innerHTML)) {
       return true;
     }
     return false;
@@ -84,8 +85,8 @@ class DescriptionEditor extends React.Component {
 
     // Perhaps React (whose VDOM gets outdated because we often prevent
     // rerendering) did not update the DOM. So we update it manually now.
-    if (this.props.description !== el.innerHTML) {
-      el.innerHTML = this.lastHtml = this.props.description;
+    if (this.props.text !== el.innerHTML) {
+      el.innerHTML = this.lastHtml = this.props.text;
     }
     replaceCaret(el);
   }
@@ -107,6 +108,7 @@ class DescriptionEditor extends React.Component {
     }
     this.lastHtml = html;
   }
+
   handleKeyDown = (originalEvt: React.SyntheticEvent<any>) => {
     const el = this.getEl();
     if (!el) return;
@@ -126,7 +128,7 @@ class DescriptionEditor extends React.Component {
   }
 
   static propTypes = {
-    description: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     innerRef: PropTypes.oneOfType([
@@ -137,10 +139,10 @@ class DescriptionEditor extends React.Component {
 }
 
 export interface Props {
-  description: string,
+  text: string,
   onChange?: Function,
   onBlur?: Function,
   innerRef?: React.RefObject<HTMLElement> | Function
 }
 
-export default DescriptionEditor;
+export default ListItemEditor;

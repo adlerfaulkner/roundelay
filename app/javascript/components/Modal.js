@@ -6,7 +6,11 @@ class Modal extends React.Component {
   constructor(props) {
     super(props);
     this.el = document.createElement('div');
-    this.el.setAttribute('class', "modal-screen");
+    let classes = ["modal-screen"];
+    if (this.props.centered) {
+      classes.push("centered");
+    }
+    this.el.setAttribute('class', classes.join(" "));
   }
 
   componentDidMount() {
