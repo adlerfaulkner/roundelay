@@ -164,7 +164,7 @@ a {
 }
 .description-font {
   font: {
-    size: 19px;
+    size: 20px;
     weight:400;
     family: $body-font-stack;
   }
@@ -189,6 +189,8 @@ a {
   @extend .base-font;
   @extend .link;
   color: $link-color;
+  outline: none;
+  border:none;
 
   &:hover {
     color: $link-hover-color;
@@ -200,7 +202,7 @@ a {
   border: 1px solid $link-color;
   color: $link-color;
   padding: 7px 17px;
-  @include rounded-corners(4px);
+  @include rounded-corners(5px);
 
   &:hover {
     color: $link-hover-color;
@@ -213,7 +215,10 @@ a {
   background-color: $link-color;
   color: white;
   padding: 7px 17px;
-  @include rounded-corners(4px);
+  @include rounded-corners(5px);
+  font-weight: 500;
+  outline: none;
+  border:none;
 
   &:hover {
     background-color: $link-hover-color;
@@ -223,7 +228,7 @@ a {
 .header-bar {
   z-index: 700;
   margin: 0 auto;
-  max-width: 1000px;
+  max-width: 1200px;
   height: 65px;
   padding: 0 20px;
   @include flexbox();
@@ -253,7 +258,7 @@ a {
     @include flexbox();
     @include align-items(center);
 
-    .login-button, .new-button {
+    .login-button, .new-button, .publish-button {
       margin-right: 17px;
     }
   }
@@ -482,7 +487,7 @@ a {
   width:85%;
 }
 .recipe-editor {
-  padding-top: 200px;
+  padding-top: 170px;
   padding-bottom: calc(50vh - 100px);
 
   .contenteditable-container {
@@ -526,7 +531,7 @@ a {
     width:55%;
     min-width: 350px;
     max-width: 700px;
-    margin-bottom: 70px;
+    margin-bottom: 100px;
   }
   .ingredient-container {
     margin-bottom: 10px;

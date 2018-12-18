@@ -63,17 +63,17 @@ class SignUpForm extends React.Component {
   }
 
   render() {
-    const errors = this.state.errors;
+    const { errors, name, email, password, password_confirmation } = this.state;
 
     return (
       <React.Fragment>
         { this.state.loading && <div className='loading-screen'><div className='spinner'></div></div>}
         <div className='form-header'>Sign Up</div>
         <form onSubmit={this.handleSubmit} className='signup-form account-form modal-form'>
-          <FormInput label='Name' name='name' errors={errors['name']} value={this.state.name} onInputChange={this.handleInputChange} />
-          <FormInput label='Email' name='email' errors={errors['email']} value={this.state.email} onInputChange={this.handleInputChange} />
-          <FormInput label='Password' name='password' errors={errors['password']} value={this.state.password} onInputChange={this.handleInputChange} />
-          <FormInput label='Confirm your password' errors={errors['password_confirmation']} name='password_confirmation' value={this.state.password_confirmation} onInputChange={this.handleInputChange} />
+          <FormInput label='Name' name='name' errors={errors['name']} value={name} onInputChange={this.handleInputChange} />
+          <FormInput label='Email' name='email' errors={errors['email']} value={email} onInputChange={this.handleInputChange} />
+          <FormInput label='Password' name='password' errors={errors['password']} value={password} onInputChange={this.handleInputChange} />
+          <FormInput label='Confirm your password' errors={errors['password_confirmation']} name='password_confirmation' value={password_confirmation} onInputChange={this.handleInputChange} />
           <input type="submit" value="Sign Up" />
         </form>
         <div className='form-footer-buttons'>

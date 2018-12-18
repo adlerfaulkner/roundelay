@@ -1,5 +1,5 @@
 const StepPlaceholders = () => {
-  let arr = ["How do we make this?", "Okay, what shall I do next?"];
+  let arr = ["How do we make it?", "Okay, what shall I do next?"];
   const options = ["Is this all timed correctly?", "Now...",
     "Don't nibble yet, we have to...", "Okay now here comes the hardest part...",
     "Did you turn on the oven yet?", "That last step was pretty tough, lets try something easier...",

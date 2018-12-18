@@ -8,7 +8,8 @@ class LoginForm extends React.Component {
     this.state = {
       email: "",
       password: "",
-      loading: false
+      loading: false,
+      errors: {}
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -51,19 +52,21 @@ class LoginForm extends React.Component {
       error: function(xhr, status) {
         self._loginRequest = null;
         const respData = xhr.responseJSON;
-        self.setState({loading: false});
+        self.setState({ loading: false, errors: respData });
       }
     });
   }
 
   render() {
+    const { email, password, errors } = this.state;
+
     return (
       <React.Fragment>
         { this.state.loading && <div className='loading-screen'><div className='spinner'></div></div>}
         <div className='form-header'>Log In</div>
         <form onSubmit={this.handleSubmit} className='login-form account-form modal-form'>
-          <FormInput label='Email' name='email' value={this.state.email} onInputChange={this.handleInputChange} />
-          <FormInput label='Password' name='password' value={this.state.password} onInputChange={this.handleInputChange} />
+          <FormInput label='Email' name='email' errors={errors['email']} value={email} onInputChange={this.handleInputChange} />
+          <FormInput label='Password' name='password' errors={errors['password']} value={password} onInputChange={this.handleInputChange} />
           <input type="submit" value="Log In" />
         </form>
         <div className='form-footer-buttons'>

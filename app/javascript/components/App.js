@@ -21,6 +21,7 @@ class App extends React.Component {
     this.loginUser = this.loginUser.bind(this);
     this.createNewRecipe = this.createNewRecipe.bind(this);
     this.logout = this.logout.bind(this);
+    this.publish = this.publish.bind(this);
   }
 
   openSignUpModal() {
@@ -52,7 +53,7 @@ class App extends React.Component {
         $('meta[name="csrf-token"]').attr('content', respData.csrf_token);
       }
     });
-    this.setState({ currentUser: null });
+    this.setState({ currentUser: null, editRecipe: null});
   }
   loginUser(userData) {
     this.setState({
@@ -61,6 +62,9 @@ class App extends React.Component {
       signUpModal: false
     });
   }
+  publish() {
+    this.setState({ editRecipe: null });
+  }
 
   render () {
     const { currentUser, signUpModal, loginModal, editRecipe } = this.state;
@@ -68,10 +72,16 @@ class App extends React.Component {
     return (
       <React.Fragment>
         <div>
-          <AppHeader currentUser={currentUser} onCloseButtonClick={this.closeModals}
-            onSignUpClick={this.openSignUpModal} onLoginClick={this.openLoginModal}
-            onNewRecipeClick={this.createNewRecipe} onLogoutClick={this.logout}
-            accountModalOpen={signUpModal || loginModal}/>
+          <AppHeader
+            currentUser={currentUser}
+            onCloseButtonClick={this.closeModals}
+            onSignUpClick={this.openSignUpModal}
+            onLoginClick={this.openLoginModal}
+            onNewRecipeClick={this.createNewRecipe}
+            onLogoutClick={this.logout}
+            onPublishClick={this.publish}
+            accountModalOpen={signUpModal || loginModal}
+            editRecipe={editRecipe} />
         </div>
         { loginModal &&
           <Modal centered><LoginForm onSignUpButtonClick={this.openSignUpModal} onLoginComplete={this.loginUser}/></Modal>

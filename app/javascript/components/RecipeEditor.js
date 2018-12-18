@@ -32,6 +32,8 @@ class RecipeEditor extends React.Component {
     const recipe = this.props.recipe;
 
     this.state = {
+      saved: recipe.id != null,
+      saving: false,
       id: recipe.id,
       title: recipe.title,
       description: recipe.description,

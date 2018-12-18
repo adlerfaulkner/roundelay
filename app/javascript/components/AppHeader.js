@@ -6,34 +6,15 @@ import Dropdown from "./Dropdown.js"
 class AppHeader extends React.Component {
   constructor(props) {
     super(props);
-    this.handleLoginClick = this.handleLoginClick.bind(this);
-    this.handleSignUpClick = this.handleSignUpClick.bind(this);
-    this.handleNewRecipeClick = this.handleNewRecipeClick.bind(this);
-    this.handleLogoutClick = this.handleLogoutClick.bind(this);
-  }
-  handleLoginClick(e) {
-    e.preventDefault();
-    this.props.onLoginClick();
-  }
-  handleSignUpClick(e) {
-    e.preventDefault();
-    this.props.onSignUpClick();
-  }
-  handleNewRecipeClick(e) {
-    e.preventDefault();
-    this.props.onNewRecipeClick();
-  }
-  handleLogoutClick(e) {
-    e.preventDefault();
-    this.props.onLogoutClick();
   }
   render () {
-    const currentUser = this.props.currentUser;
-    const accountModalOpen = this.props.accountModalOpen;
+    const { currentUser, accountModalOpen, onCloseButtonClick, editRecipe,
+      onNewRecipeClick, onPublishClick, onLoginClick, onLogoutClick,
+      onSignUpClick } = this.props;
     let headerButtons;
 
     if (accountModalOpen) {
-      headerButtons = <div className='close-button non-border-link' onClick={this.props.onCloseButtonClick}>Close</div>;
+      headerButtons = <div className='close-button non-border-link' onClick={onCloseButtonClick}>Close</div>;
     } else {
       let loginButtons;
 
@@ -41,17 +22,21 @@ class AppHeader extends React.Component {
         const avatar = <Avatar user={currentUser}/>
         loginButtons = (
           <React.Fragment>
-            <a href='/new-recipe' className='new-button fill-link' onClick={this.handleNewRecipeClick}>New Recipe</a>
+            { editRecipe == null ?
+              <button className='new-button fill-link' onClick={this.props.onNewRecipeClick}>New Recipe</button>
+              :
+              <button className='publish-button fill-link' onClick={this.props.onPublishClick}>Publish</button>
+            }
             <Dropdown buttonContents={avatar} align={'right'}>
-              <a href='/logout' className='dropdown-option' onClick={this.handleLogoutClick}>Log Out</a>
+              <button className='dropdown-option' onClick={this.props.onLogoutClick}>Log Out</button>
             </Dropdown>
           </React.Fragment>
         )
       } else {
         loginButtons = (
           <React.Fragment>
-            <a href='/login' className='login-button non-border-link' onClick={this.handleLoginClick}>Log In</a>
-            <a href='/signup' className='signup-button border-link' onClick={this.handleSignUpClick}>Sign Up</a>
+            <button className='login-button non-border-link' onClick={this.props.onLoginClick}>Log In</button>
+            <button className='signup-button fill-link' onClick={this.props.onSignUpClick}>Sign Up</button>
           </React.Fragment>
         )
       }
