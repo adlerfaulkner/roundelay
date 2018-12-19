@@ -14,6 +14,7 @@ gem 'react-rails',  '2.4.5'
 
 group :development, :test do
 	gem 'faker', '> 1.5.0'
+  gem "shoulda"
 
   gem 'rspec-rails'
   gem 'factory_girl_rails'

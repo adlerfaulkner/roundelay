@@ -17,11 +17,18 @@
 #  reset_password_email_sent_at    :datetime
 #
 
-FactoryGirl.define do
-  factory :user do
-    email { Faker::Internet.email }
-    name { Faker::Name.name }
-    password "password"
-    password_confirmation "password"
+require 'rails_helper'
+
+RSpec.describe Recipe, type: :model do
+
+  describe "Validations" do
+    it { should validate_presence_of(:writer) }
+  end
+
+  describe "Associations" do
+    it { should have_many(:ingredients) }
+    it { should have_many(:steps) }
+    it { should belong_to(:creator) }
+    it { should belong_to(:writer) }
   end
 end

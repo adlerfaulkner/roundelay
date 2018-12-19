@@ -9,7 +9,7 @@ class Api::V1::SessionsController < ApplicationController
       render json: { email: ["We couldn't find a user with that email. Try another one?"] }, status: 404 and return
     end
 
-  	if !user.nil? && login(params[:email], params[:password])
+  	if login(params[:email], params[:password])
       render json: user.as_json, status: 200
 		else
 		 render json: { password: ["Hmm, looks like you entered an incorrect password."] }, status: 401

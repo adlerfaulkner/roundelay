@@ -20,6 +20,9 @@
 class User < ApplicationRecord
   authenticates_with_sorcery!
 
+  has_many :created_recipies, class_name: 'Recipe', foreign_key: :creator_id
+  has_many :written_recipies, class_name: 'Recipe', foreign_key: :creator_id
+
   VALID_EMAIL_REGEX = /@/i
   validates :email,
     length: { maximum: 255 },
