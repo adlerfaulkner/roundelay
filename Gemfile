@@ -11,6 +11,7 @@ gem 'jbuilder',     '2.6.4'
 gem 'sorcery',      '0.12.0'
 gem 'webpacker',    '3.5.5'
 gem 'react-rails',  '2.4.5'
+gem 'kaminari',     '1.1.1'
 
 group :development, :test do
 	gem 'faker', '> 1.5.0'

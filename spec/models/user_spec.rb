@@ -20,6 +20,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  subject { described_class.new(name: "Adler", email: 'adler@comake.io', password: 'abc123', password_confirmation: 'abc123' )}
 
   describe "Validations" do
     it { should validate_presence_of(:email).with_message("Please enter an email address.") }

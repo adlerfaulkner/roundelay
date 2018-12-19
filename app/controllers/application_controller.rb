@@ -6,4 +6,10 @@ class ApplicationController < ActionController::Base
       redirect_to '/', flash: { error: 'You must be logged out to access that page.' }
     end
   end
+
+  def require_login
+    if !logged_in?
+      redirect_to '/', flash: { error: 'You must be logged in to access that page.' }
+    end
+  end
 end

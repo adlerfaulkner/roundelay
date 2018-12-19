@@ -45,6 +45,13 @@ class User < ApplicationRecord
 
   before_create :set_username
 
+  def as_json(*)
+    super.except("updated_at", "created_at", "salt",
+      "crypted_password", "remember_me_token", "remember_me_token_expires_at",
+      "reset_password_token", "reset_password_email_sent_at", "reset_password_token_expires_at"
+    )
+  end
+
   private
 
   def set_username

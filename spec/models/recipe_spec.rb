@@ -23,6 +23,8 @@ RSpec.describe Recipe, type: :model do
 
   describe "Validations" do
     it { should validate_presence_of(:writer) }
+    it {should validate_presence_of(:ingredients)}
+    it {should validate_presence_of(:steps)}
   end
 
   describe "Associations" do
