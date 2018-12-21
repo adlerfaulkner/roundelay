@@ -5,7 +5,7 @@ class Api::V1::RecipiesController < ApplicationController
     page = params[:page] ? params[:page].to_i : 1
     recipies = Recipe.page(page).per(50)
     last_page = recipies.last_page?
-    render json: { recipes: recipies, last_page: last_page }, status: 200
+    render json: { recipes: recipies.map(&:to_json), last_page: last_page }, status: 200
   end
 
   def create
@@ -20,7 +20,21 @@ class Api::V1::RecipiesController < ApplicationController
   end
 
   def update
+    recipe = Recipe.find_by(id: params[:id])
 
+    unless recipe
+      render json: { error: "Invalid recipe." }, status: 422 and return
+    end
+
+    unless recipe.can_edit?(current_user.id)
+      render json: { error: "Permission denied." }, status: 403 and return
+    end
+
+    unless recipe.update(recipe_params)
+      render json: recipe.errors.full_messages, status: 422 and return
+    end
+
+    render json: recipe.to_json, status: 200
   end
 
   private

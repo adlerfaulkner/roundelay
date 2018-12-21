@@ -4,8 +4,8 @@ FactoryGirl.define do
     title Faker::Book.title
 
     before(:create) do |recipe, evaluator|
-      recipe.ingredients = build_list(:ingredient, 1, recipe: recipe)
-      recipe.steps = build_list(:step, 1, recipe: recipe)
+      recipe.ingredients = build_list(:ingredient, 2, recipe: recipe)
+      recipe.steps = build_list(:step, 2, recipe: recipe)
     end
   end
 end

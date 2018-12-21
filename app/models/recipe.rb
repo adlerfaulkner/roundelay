@@ -21,7 +21,7 @@ class Recipe < ApplicationRecord
   validates :ingredients, presence: true
   validates :steps, presence: true
 
-  accepts_nested_attributes_for :ingredients, :steps
+  accepts_nested_attributes_for :ingredients, :steps, allow_destroy: true
 
   default_scope { order(created_at: :desc) }
 
@@ -32,5 +32,9 @@ class Recipe < ApplicationRecord
       recipe["steps"] = self.steps.map(&:to_json)
       recipe["ingredients"] = self.ingredients.map(&:to_json)
     end
+  end
+
+  def can_edit?(user_id)
+    creator_id == user_id || writer_id == user_id
   end
 end
