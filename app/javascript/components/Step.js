@@ -32,7 +32,7 @@ class Step extends React.Component {
 
     return (
       <div className='step-container contenteditable-container'>
-        <div className='step-number'>{this.props.index+1}.</div>
+        <div className='step-number'>{this.props.index+1}</div>
         <div className='step-placeholder contenteditable-placeholder' style={placeholderStyle}>{this.props.placeholder}</div>
         <ListItemEditor text={text}
           innerRef={this.props.innerRef}

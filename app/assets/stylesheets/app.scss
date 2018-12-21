@@ -164,7 +164,15 @@ a {
 }
 .description-font {
   font: {
-    size: 20px;
+    size: 18px;
+    weight:400;
+    family: $font-stack;
+  }
+  color: $oil;
+}
+.body-font {
+  font: {
+    size: 18px;
     weight:400;
     family: $body-font-stack;
   }
@@ -483,40 +491,60 @@ a {
 .page-width {
   margin: 0 auto;
   min-width: 400px;
-  max-width: 850px;
+  max-width: 950px;
   width:85%;
 }
 .recipe-editor {
-  padding-top: 170px;
+  padding-top: 120px;
   padding-bottom: calc(50vh - 100px);
 
   .contenteditable-container {
     position: relative;
     width:100%;
 
-    .title-editor, .title-placeholder {
-      @extend .title-font;
-    }
-    .description-editor, .description-placeholder {
-      @extend .description-font;
-    }
     .contenteditable {
       position: relative;
       z-index: 1;
     }
     .contenteditable-placeholder {
       z-index: 0;
-      color: $iron;
+      color: $base;
       position: absolute;
       top: 0px;
       left: 0px;
     }
   }
+  .title-editor, .title-placeholder, .description-editor, .description-placeholder {
+    text-align: center;
+    width: 100%;
+  }
+  .title-container {
+    @extend .title-font;
+  }
   .description-container {
-    margin-top: 25px;
-    margin-bottom: 70px;
+    @extend .description-font;
+    width:75%;
+    max-width: 600px;
+    left: 0;
+    right:0;
+    margin: 15px auto 70px auto;
     line-height: 1.45em;
-    font-style: italic;
+  }
+  .description-container {
+
+  }
+  .recipe-body {
+    @include flexbox();
+
+    .steps-section {
+      @include flex(3);
+      min-width: 400px;
+    }
+    .ingredients-section {
+      @include flex(1);
+      max-width: 450px;
+      min-width: 280px;
+    }
   }
   .section {
     margin-bottom: 70px;
@@ -525,19 +553,15 @@ a {
     min-height: 100px;
   }
   .ingredients-section {
-    left: 0;
-    right:0;
-    margin:auto;
-    width:55%;
-    min-width: 350px;
-    max-width: 700px;
-    margin-bottom: 100px;
+    margin-top: 3px;
   }
   .ingredient-container {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    font-weight: 700 !important;
+    font-size: 16px !important;
   }
   .ingredient-container, .step-container {
-    @extend .description-font;
+    @extend .body-font;
     line-height: 1.45em;
     position: relative;
 
@@ -550,12 +574,26 @@ a {
     margin-bottom: 15px;
 
     .contenteditable-placeholder, .contenteditable {
-      padding-left: 35px;
+      padding-left: 30px;
     }
     .step-number {
       position: absolute;
       top: 0;
       left:0;
+      font-weight: 700;
     }
+  }
+}
+@media only screen and (min-width: 700px ) {
+  .recipe-body {
+    .ingredients-section {
+      margin-right: 8%;
+    }
+  }
+}
+
+@media only screen and (max-width: 700px ) {
+  .recipe-body {
+    @include flex-direction(column);
   }
 }

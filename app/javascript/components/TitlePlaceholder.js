@@ -2,7 +2,7 @@ const TitlePlaceholder = () => {
   const placeholders = [
     ["I'd love to bake", "Some danish from scratch"],
     ["My farovite dish", "Tastes like heaven on earth"],
-    ["Last christmas we had", "The same thing we always do"],
+    ["Last christmas we had", "The same thing we always make"],
     ["Eat your veggies", "Like your mother told you"],
     ["Feed me", "I just swam across the lake"],
     ["My children like", "Sugar and spice and everything nice"],

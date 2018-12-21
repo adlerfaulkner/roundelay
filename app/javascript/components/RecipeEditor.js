@@ -195,11 +195,13 @@ class RecipeEditor extends React.Component {
             onReturn={this.handleDescReturn}
             onDelete={this.handleDescDelete}/>
         </div>
-        <div className='section ingredients-section'>
-          { ingredientsList }
-        </div>
-        <div className='section steps-section'>
-          { stepsList }
+        <div className='recipe-body'>
+          <div className='section ingredients-section'>
+            { ingredientsList }
+          </div>
+          <div className='section steps-section'>
+            { stepsList }
+          </div>
         </div>
       </div>
     );
