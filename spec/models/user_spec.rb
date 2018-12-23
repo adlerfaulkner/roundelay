@@ -37,7 +37,7 @@ RSpec.describe User, type: :model do
   end
 
   describe "Associations" do
-    it { should have_many(:created_recipies) }
-    it { should have_many(:written_recipies) }
+    it { should have_many(:created_recipes) }
+    it { should have_many(:written_recipes) }
   end
 end

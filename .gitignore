@@ -35,3 +35,13 @@ config/initializers/secret_token.rb
 /node_modules
 yarn-debug.log*
 .yarn-integrity
+
+# ignore local changes to solr files
+/solr/configsets/sunspot/conf/*
+!/solr/configsets/sunspot/conf/schema.xml
+!/solr/configsets/sunspot/conf/solrconfig.xml
+/solr/default
+/solr/development
+/solr/test
+/solr/pids
+/solr/solr

@@ -38,9 +38,11 @@ class RecipeEditor extends React.Component {
       title: recipe.title,
       description: recipe.description,
       ingredients: recipe.ingredients,
+      prevIngredients: recipe.ingredients,
       steps: recipe.steps,
+      prevSteps: recipe.steps,
       creator: recipe.creator,
-      postedBy: recipe.postedBy
+      writer: recipe.writer
     }
     const placeholders = TitlePlaceholder();
     this.ingredientPlaceholders = IngredientPlaceholders();
@@ -60,15 +62,139 @@ class RecipeEditor extends React.Component {
     this.handleIngredientDelete = this.handleIngredientDelete.bind(this);
     this.handleStepReturn = this.handleStepReturn.bind(this);
     this.handleStepDelete = this.handleStepDelete.bind(this);
+    this.handleRecipeChange = this.handleRecipeChange.bind(this);
+    this.saveRecipe = this.saveRecipe.bind(this);
+  }
+  handleRecipeChange() {
+    const self = this;
+    if (this._saveRecipeTimeout) {
+      clearTimeout(this._saveRecipeTimeout);
+    }
+    this.setState({ saved: false });
+    this.props.onSaveStateUpdate("Unsaved");
+    this._saveRecipeTimeout = setTimeout( function() {
+      self.saveRecipe();
+    }, 1000);
+  }
+  saveRecipe() {
+    if (this.state.saving) {
+      return
+    }
+
+    this.setState({ saving: true });
+    this.props.onSaveStateUpdate("Saving...");
+    const self = this;
+    const { id, title, description, ingredients, steps, prevIngredients, prevSteps } = this.state;
+
+    let ingredients_to_delete = [];
+    let steps_to_delete = [];
+    const ingredientsForParams = ingredients.map((ingredient, i) => {
+      const ingredientCopy = {
+        position: i,
+        text: ingredient.text
+      }
+      if (ingredient.id) {
+        ingredientCopy.id = ingredient.id;
+      }
+      return ingredientCopy;
+    });
+    for(let i=0; i < prevIngredients.length; i++) {
+      const id = prevIngredients[i].id;
+      if (id) {
+        const ingredientInParams = ingredientsForParams.find((i) => i.id == id);
+        if (!ingredientInParams) {
+          ingredients_to_delete.push(id);
+        }
+      }
+    }
+
+    const stepsForParams = steps.map((step, i) => {
+      const stepCopy = {
+        position: i,
+        text: step.text
+      }
+      if (step.id) {
+        stepCopy.id = step.id;
+      }
+      return stepCopy;
+    });
+    for(let i=0; i < prevSteps.length; i++) {
+      const id = prevSteps[i].id;
+      if (id) {
+        const stepInParams = stepsForParams.find((i) => i.id == id);
+        if (!stepInParams) {
+          steps_to_delete.push(id);
+        }
+      }
+    }
+
+    const params = {
+      recipe: {
+        title: title,
+        description: description,
+        ingredients_attributes: ingredientsForParams,
+        steps_attributes: stepsForParams,
+      },
+      ingredients_to_delete: ingredients_to_delete,
+      steps_to_delete: steps_to_delete
+    }
+
+    let url, method;
+    if (id) {
+      url = "/recipes/" + id;
+      method = "PATCH";
+    } else {
+      url = "/recipes"
+      method = "POST";
+    }
+    this._saveRecipeRequest = $.ajax({
+      url: "/api/v1" + url,
+      data: params,
+      dataType: 'JSON',
+      method: method,
+      success: function(respData) {
+        self.props.onSaveStateUpdate("Saved");
+        const newIngredients = respData.ingredients.map((i) => JSON.parse(i));
+        const newSteps = respData.steps.map((i) => JSON.parse(i));
+        self.setState((prevState) => {
+          return {
+            prevIngredients: newIngredients,
+            prevSteps: newSteps,
+            saving: false,
+            saved: true,
+            id: respData.id,
+            ingredients: prevState.ingredients.map((ingredient, i) => {
+              ingredient.id = newIngredients[i].id;
+              return ingredient;
+            }),
+            steps: prevState.steps.map((step, i) => {
+              step.id = newSteps[i].id;
+              return step;
+            })
+          }
+        });
+        self.props.onEditorRecipeChange(respData);
+      },
+      error: function(xhr, status) {
+        console.log(xhr);
+        console.log(status);
+        self.setState({
+          saving: false,
+          saved: false,
+        });
+      }
+    })
   }
   handleTitleChange(e) {
     this.setState({ title: e.target.value });
+    this.handleRecipeChange();
   }
   handleTitleReturn() {
     placeCaretAtEnd(this.descRef.current);
   }
   handleDescriptionChange(e) {
     this.setState({ description: e.target.value });
+    this.handleRecipeChange();
   }
   handleDescReturn() {
     placeCaretAtEnd(this.state.ingredients[0].innerRef.current);
@@ -84,6 +210,7 @@ class RecipeEditor extends React.Component {
       newState.ingredients[index].text = text;
       return newState;
     });
+    this.handleRecipeChange();
   }
   handleStepTextChange(index, text) {
     this.setState((prevState) => {
@@ -93,6 +220,7 @@ class RecipeEditor extends React.Component {
       newState.steps[index].text = text;
       return newState;
     });
+    this.handleRecipeChange();
   }
   handleIngredientDelete(index) {
     const { ingredients } = this.state;
@@ -104,9 +232,10 @@ class RecipeEditor extends React.Component {
         newIngredients.splice(index,1)
         return { ingredients: newIngredients };
       }, () => {
-        placeCaretAtEnd(ingredients[Math.max(0, index-1)].innerRef.current);
+        placeCaretAtEnd(this.state.ingredients[Math.max(0, index-1)].innerRef.current);
       });
     }
+    this.handleRecipeChange();
   }
   handleIngredientReturn(index) {
     this.setState((prevState) => {
@@ -114,6 +243,7 @@ class RecipeEditor extends React.Component {
       newIngredients.splice(index+1, 0, { text: "", innerRef: React.createRef() });
       return { ingredients: newIngredients };
     });
+    this.handleRecipeChange();
   }
   handleStepDelete(index) {
     const { steps, ingredients } = this.state;
@@ -125,9 +255,10 @@ class RecipeEditor extends React.Component {
         newSteps.splice(index,1)
         return { steps: newSteps };
       }, () => {
-        placeCaretAtEnd(steps[Math.max(0, index-1)].innerRef.current);
+        placeCaretAtEnd(this.state.steps[Math.max(0, index-1)].innerRef.current);
       });
     }
+    this.handleRecipeChange();
   }
   handleStepReturn(index) {
     this.setState((prevState) => {
@@ -135,6 +266,7 @@ class RecipeEditor extends React.Component {
       newSteps.splice(index+1, 0, { text: "", innerRef: React.createRef() } );
       return { steps: newSteps };
     });
+    this.handleRecipeChange();
   }
   componentDidMount() {
     const self = this;
@@ -143,14 +275,14 @@ class RecipeEditor extends React.Component {
     });
   }
   render () {
-    const { title, description, ingredients, steps, creator, postedBy } = this.state;
+    const { title, description, ingredients, steps, creator, writer } = this.state;
     let titlePlaceholderStyle;
     if (title.length > 0) {
-      titlePlaceholderStyle = { display: 'none' }
+      titlePlaceholderStyle = { display: 'none' };
     }
     let descPlaceholderStyle;
     if (description.length > 0) {
-      descPlaceholderStyle = { display: 'none' }
+      descPlaceholderStyle = { display: 'none' };
     }
 
     const ingredientsList = ingredients.map((ingredient, i) => {

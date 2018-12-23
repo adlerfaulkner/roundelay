@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::RecipiesController, type: :controller do
+RSpec.describe Api::V1::recipesController, type: :controller do
   describe "GET #index" do
     it "always returns no errors" do
       get :index

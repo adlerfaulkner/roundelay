@@ -10,43 +10,46 @@ class AppHeader extends React.Component {
   render () {
     const { currentUser, accountModalOpen, onCloseButtonClick, editRecipe,
       onNewRecipeClick, onPublishClick, onLoginClick, onLogoutClick,
-      onSignUpClick } = this.props;
-    let headerButtons;
+      onSignUpClick, recipeEditorSaveState } = this.props;
+    let headerButtons, leftButtons;
 
-    if (accountModalOpen) {
-      headerButtons = <div className='close-button non-border-link' onClick={onCloseButtonClick}>Close</div>;
-    } else {
+    if (accountModalOpen || editRecipe) {
+      leftButtons = <div className='close-button non-border-link' onClick={onCloseButtonClick}>Close</div>;
+    }
+
+    if (!accountModalOpen) {
       let loginButtons;
 
-      if (currentUser) {
-        const avatar = <Avatar user={currentUser}/>
-        loginButtons = (
-          <React.Fragment>
-            { editRecipe == null ?
-              <button className='new-button fill-link' onClick={this.props.onNewRecipeClick}>New Recipe</button>
-              :
-              <button className='publish-button fill-link' onClick={this.props.onPublishClick}>Publish</button>
-            }
-            <Dropdown buttonContents={avatar} align={'right'}>
-              <button className='dropdown-option' onClick={this.props.onLogoutClick}>Log Out</button>
+      if (editRecipe) {
+        headerButtons = <div className='editor-buttons-wrapper'>
+          <div className='save-state'>{recipeEditorSaveState}</div>
+          { (editRecipe.id != null && $.trim(editRecipe.title).length > 0) ?
+            <button className='publish-button fill-link' onClick={onPublishClick}>Publish</button>
+            :
+            <Dropdown buttonContents={<button className='publish-button fill-link inactive'>Publish</button>}>
+              <div className='cannot-publish-notice'>Add a title to your recipe before publishing it!</div>
             </Dropdown>
-          </React.Fragment>
-        )
+          }
+        </div>
+      } else if (currentUser) {
+        const avatar = <Avatar user={currentUser}/>
+        headerButtons = <div className='login-wrapper'>
+            { editRecipe == null && <button className='new-button fill-link' onClick={onNewRecipeClick}>New Recipe</button> }
+            <Dropdown buttonContents={avatar} align={'right'}>
+              <button className='dropdown-option' onClick={onLogoutClick}>Log Out</button>
+            </Dropdown>
+          </div>
       } else {
-        loginButtons = (
-          <React.Fragment>
-            <button className='login-button non-border-link' onClick={this.props.onLoginClick}>Log In</button>
-            <button className='signup-button fill-link' onClick={this.props.onSignUpClick}>Sign Up</button>
-          </React.Fragment>
-        )
+        headerButtons = <div className='login-wrapper'>
+          <button className='login-button non-border-link' onClick={this.props.onLoginClick}>Log In</button>
+          <button className='signup-button fill-link' onClick={this.props.onSignUpClick}>Sign Up</button>
+        </div>
       }
-      headerButtons = (
-        <div className='login-wrapper'>{ loginButtons }</div>
-      )
     }
 
     return (
       <div className='header-bar'>
+        { leftButtons }
         <div className='logo-container'>
           <a href="" className='site-nav-logo'>
             <svg width="163px" height="35px" viewBox="0 0 163 35">

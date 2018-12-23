@@ -106,6 +106,20 @@ $link-hover-color : darken($link-color, 10%);
     box-shadow: $top $left $blur $color !important;
   }
 }
+@mixin placeholder-color($color) {
+	&::-webkit-input-placeholder {
+		color: $color;
+	}
+	&:-moz-placeholder {
+		color:$color;
+	}
+	&::-moz-placeholder {
+		color: $color;
+	}
+	&:-ms-input-placeholder {
+		color:$color;
+	}
+}
 @-webkit-keyframes rotation {
    from {-webkit-transform: rotate(0deg);}
    to {-webkit-transform: rotate(359deg);}
@@ -149,7 +163,7 @@ a {
 }
 .base-font {
   font: {
-    size: 14px;
+    size: 18px;
     weight:400;
     family: $font-stack;
   }
@@ -157,7 +171,7 @@ a {
 .title-font {
   font: {
     size: 46px;
-    weight:500;
+    weight:600;
     family: $font-stack;
   }
   color: $oil;
@@ -223,7 +237,7 @@ a {
   background-color: $link-color;
   color: white;
   padding: 7px 17px;
-  @include rounded-corners(5px);
+  @include rounded-corners(6px);
   font-weight: 500;
   outline: none;
   border:none;
@@ -232,7 +246,72 @@ a {
     background-color: $link-hover-color;
   }
 }
+.recipe-search {
+  border-bottom: 1px solid $silver;
+  margin: 0 auto;
+  min-width: 400px;
+  max-width: 950px;
+  width:75%;
+  padding: 25px 0;
 
+  input {
+    width:100%;
+    font: {
+      size: 24px;
+      weight:400;
+      family: $font-stack;
+    }
+    outline: none;
+    border:none;
+    color: $oil;
+    @include placeholder-color($base);
+  }
+}
+.recipe-list {
+  margin: 0 auto;
+  min-width: 400px;
+  max-width: 950px;
+  width:75%;
+
+  .recipe-container {
+    border-bottom: 1px solid $silver;
+    padding: 27px 0;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    .recipe-title {
+      font: {
+        size: 24px;
+        weight:600;
+        family: $font-stack;
+      }
+      color: $oil;
+      margin-bottom: 6px;
+    }
+    .recipe-description {
+      font: {
+        size: 16px;
+        weight:400;
+        family: $body-font-stack;
+      }
+      color: $jumbo;
+      margin-bottom: 13px;
+    }
+    .recipe-people {
+      font: {
+        size: 14px;
+        weight:400;
+        family: $font-stack;
+      }
+      color: $jumbo;
+      .user-avatar {
+        display: inline;
+      }
+    }
+  }
+}
 .header-bar {
   z-index: 700;
   margin: 0 auto;
@@ -262,28 +341,32 @@ a {
   div:not(.logo-container) {
     z-index: 2;
   }
-  .login-wrapper {
+  .login-wrapper, .editor-buttons-wrapper {
     @include flexbox();
     @include align-items(center);
 
-    .login-button, .new-button, .publish-button {
+    .save-state {
+      @extend .base-font;
+      color: $aluminum;
+      margin-right:15px;
+    }
+
+    .login-button, .new-button {
       margin-right: 17px;
     }
   }
-}
-
-.user-avatar {
-  @extend .base-font;
-  @extend .link;
-  color: $oil;
-  height:30px;
-  padding-top: 6px;
-
-  &:hover {
+  .user-avatar {
+    @extend .base-font;
+    @extend .link;
     color: $oil;
+    height:30px;
+    padding-top: 6px;
+
+    &:hover {
+      color: $oil;
+    }
   }
 }
-
 #modal-root {
   position: fixed;
   left:0;
@@ -367,8 +450,8 @@ a {
     position: relative;
   }
   input:active + label, input:focus + label, label.up {
-    top: -16px;
-    font-size: 12px;
+    top: -17px;
+    font-size: 13px;
   }
   .errors {
     position: absolute;
@@ -404,7 +487,7 @@ a {
 
   label {
     @extend .base-font;
-    font-size: 15px;
+    font-size: 18px;
     color: lighten(#d01257, 9%);
     position: absolute;
     left:20px;
@@ -420,7 +503,7 @@ a {
     @include rounded-corners(7px);
     border:none;
     outline: none;
-    font-size: 15px;
+    font-size: 18px;
 
     &[type='submit'] {
       @extend .fill-link;
@@ -461,9 +544,9 @@ a {
 
   }
   .dropdown {
+    min-width: 200px;
     position: absolute;
     top:100%;
-    min-width: 100%;
     padding: 5px 0;
     background-color: white;
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0 1px rgba(0,0,0,.35);
@@ -480,9 +563,11 @@ a {
       @extend .base-font;
       color:$oil;
       white-space: nowrap;
+      outline: none;
+      border:none;
 
       &:hover {
-        background-color: $vapor;
+        background-color: $white-smoke;
         color: $oil;
       }
     }

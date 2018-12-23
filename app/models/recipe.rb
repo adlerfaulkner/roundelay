@@ -24,6 +24,22 @@ class Recipe < ApplicationRecord
   accepts_nested_attributes_for :ingredients, :steps, allow_destroy: true
 
   default_scope { order(created_at: :desc) }
+  scope :published, -> { where(published: true ) }
+  scope :unpublished, -> { where(published: false ) }
+
+  searchable :if => :published do
+    text :text, as: :text_textinc do
+      text_for_search.downcase
+    end
+  end
+
+  def text_for_search
+    title_for_search = title
+    if title.length < 1
+      title_for_search = 'Untitled'
+    end
+    [title_for_search, description, writer.name, *ingredients.map(&:text), *steps.map(&:text)].join(" ")
+  end
 
   def as_json(*)
     super.except("creator_id", "writer_id", "updated_at", "created_at").tap do |recipe|

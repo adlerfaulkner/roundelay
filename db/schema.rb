@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181218090250) do
+ActiveRecord::Schema.define(version: 20181222094253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,8 +29,9 @@ ActiveRecord::Schema.define(version: 20181218090250) do
     t.integer  "writer_id"
     t.string   "title"
     t.text     "description"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.boolean  "published",   default: false
     t.index ["creator_id"], name: "index_recipes_on_creator_id", using: :btree
     t.index ["writer_id"], name: "index_recipes_on_writer_id", using: :btree
   end
