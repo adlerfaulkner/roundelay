@@ -8,11 +8,12 @@ class RecipeListItem extends React.Component {
     this.descTextRef = React.createRef();
     this.descContainerRef = React.createRef();
     this.handleRecipeClick = this.handleRecipeClick.bind(this);
+    this.addEllipses = this.addEllipses.bind(this);
   }
   handleRecipeClick(e) {
     this.props.onRecipeClick(this.props.recipe);
   }
-  componentDidMount() {
+  addEllipses() {
     let hasEllipsis = false;
     const descContainer = $(this.descContainerRef.current);
     const descText = $(this.descTextRef.current);
@@ -33,11 +34,22 @@ class RecipeListItem extends React.Component {
       iterations += 1;
     }
   }
+  componentDidMount() {
+    this.addEllipses()
+  }
+  componentDidUpdate(prevProps) {
+    const { recipe, refresh } = this.props;
+    if (prevProps.refresh != refresh) {
+      const stepText = recipe.steps.map((s, i) => [i+1, s.text].join(" ")).join(" ");
+      $(this.descTextRef.current).html(recipe.description + " " + stepText);
+      this.addEllipses();
+    }
+  }
 
 
   render () {
     const { recipe } = this.props;
-    const stepText = recipe.steps.map((s, i) => [i+1, s.text].join(" ")).join(" ")
+    const stepText = recipe.steps.map((s, i) => [i+1, s.text].join(" ")).join(" ");
 
     return (
       <div className='recipe-container' onClick={this.handleRecipeClick}>

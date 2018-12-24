@@ -27,6 +27,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      refreshRecipes: false,
       currentUser: this.props.currentUser,
       signUpModal: false,
       loginModal: false,
@@ -63,6 +64,7 @@ class App extends React.Component {
     this.handleDraftsClick = this.handleDraftsClick.bind(this);
     this.loadDrafts = this.loadDrafts.bind(this);
     this.handleLogoClick = this.handleLogoClick.bind(this);
+    this.refreshRecipes = this.refreshRecipes.bind(this);
   }
   handleLogoClick(e) {
     e.preventDefault();
@@ -244,6 +246,16 @@ class App extends React.Component {
       }
     });
   }
+  refreshRecipes(e) {
+    console.log('rezise')
+    const self = this;
+    if (this._resizeRefreshTimeout) {
+      clearTimeout(this._resizeRefreshTimeout);
+    }
+    this._resizeRefreshTimeout = setTimeout(function() {
+      self.setState((prevState) => { return { refreshRecipes: !prevState.refreshRecipes } });
+    }, 300)
+  }
   componentDidMount() {
     const { initialRecipesLoad, loadingRecipesPage, draftsOpen, initialDraftsLoad, loadingDraftsPage } = this.state;
     if (!initialRecipesLoad && !loadingRecipesPage) {
@@ -252,6 +264,7 @@ class App extends React.Component {
     if (draftsOpen && !initialDraftsLoad && !loadingDraftsPage) {
       this.loadDrafts();
     }
+    window.addEventListener("resize", this.refreshRecipes);
   }
   componentDidUpdate() {
     const { initialRecipesLoad, loadingRecipesPage, draftsOpen, initialDraftsLoad, loadingDraftsPage } = this.state;
@@ -266,7 +279,7 @@ class App extends React.Component {
   render () {
     const { currentUser, signUpModal, loginModal, editRecipe, publishing,
       recipeEditorSaveState, recipes, searchText, openRecipe, loadingRecipesPage,
-      draftsOpen, drafts, loadingDraftsPage } = this.state;
+      draftsOpen, drafts, loadingDraftsPage, refreshRecipes } = this.state;
 
     let recipesToDisplay = recipes;
     if (draftsOpen) {
@@ -274,7 +287,7 @@ class App extends React.Component {
     }
 
     const recipeList = recipesToDisplay.map((r, i) => {
-      return <RecipeListItem key={i} recipe={r} onRecipeClick={this.handleRecipeClick} />
+      return <RecipeListItem key={i} refresh={refreshRecipes} recipe={r} onRecipeClick={this.handleRecipeClick} />
     });
 
     return (
