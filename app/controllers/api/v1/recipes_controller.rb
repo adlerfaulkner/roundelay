@@ -1,5 +1,5 @@
 class Api::V1::RecipesController < ApplicationController
-  before_action :require_login, only: [:create, :update]
+  before_action :require_login, only: [:create, :update, :drafts]
 
   def index
     page = params[:page] ? params[:page].to_i : 1

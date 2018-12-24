@@ -20,6 +20,7 @@ class AppHeader extends React.Component {
       if (editRecipe) {
         headerButtons = <div className='editor-buttons-wrapper'>
           <div className='save-state'>{recipeEditorSaveState}</div>
+          <div className='close-button black-non-border-link margin-button' onClick={onCloseButtonClick}>Close draft</div>
           { (editRecipe.id != null && $.trim(editRecipe.title).length > 0) ?
             <button className='publish-button fill-link' onClick={onPublishClick}>Publish</button>
             :

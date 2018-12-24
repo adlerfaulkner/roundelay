@@ -16,11 +16,11 @@ class Recipe < ApplicationRecord
   include ActiveModel::Dirty
 
   has_many :ingredients, inverse_of: :recipe, dependent: :destroy,
-    after_add: [ lambda { |r,i| r.__elasticsearch__.index_document } ],
-    after_remove: [ lambda { |r,i| r.__elasticsearch__.index_document } ]
+    after_add: [ lambda { |r,i| r.__elasticsearch__.index_document if r.published } ],
+    after_remove: [ lambda { |r,i| r.__elasticsearch__.index_document if r.published } ]
   has_many :steps, inverse_of: :recipe, dependent: :destroy,
-    after_add: [ lambda { |r,s| r.__elasticsearch__.index_document } ],
-    after_remove: [ lambda { |r,s| r.__elasticsearch__.index_document } ]
+    after_add: [ lambda { |r,s| r.__elasticsearch__.index_document if r.published } ],
+    after_remove: [ lambda { |r,s| r.__elasticsearch__.index_document if r.published } ]
   belongs_to :creator, class_name: 'User'
   belongs_to :writer, class_name: 'User'
 
@@ -75,7 +75,7 @@ class Recipe < ApplicationRecord
     {
       title: title.blank? ? "untitled" : title.downcase,
       description: description&.downcase,
-      body: body.downcase
+      body: body.downcase,
     }
   end
 

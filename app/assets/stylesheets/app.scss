@@ -214,6 +214,7 @@ a {
   color: $link-color;
   outline: none;
   border:none;
+  background: none;
 
   &:hover {
     color: $link-hover-color;
@@ -225,6 +226,7 @@ a {
   color: $oil;
   outline: none;
   border:none;
+  background: none;
 
   &:hover {
     color: black;
@@ -299,7 +301,7 @@ body, html {
   input {
     width:100%;
     font: {
-      size: 24px;
+      size: 22px;
       weight:400;
       family: $font-stack;
     }
@@ -312,7 +314,7 @@ body, html {
   }
   .header-text {
     font: {
-      size: 24px;
+      size: 22px;
       weight:600;
       family: $font-stack;
     }
@@ -326,6 +328,12 @@ body, html {
   max-width: 950px;
   width:75%;
   padding-bottom: 100px;
+
+  .empty-notice {
+    margin: 25px 0;
+    @extend .base-font;
+    color: $jumbo;
+  }
 
   .loading-icon {
     margin: 25px 0;
@@ -364,7 +372,7 @@ body, html {
 
     .recipe-title {
       font: {
-        size: 24px;
+        size: 22px;
         weight:600;
         family: $font-stack;
       }
@@ -377,9 +385,10 @@ body, html {
         weight:400;
         family: $body-font-stack;
       }
+      line-height: 1.3em;
       color: $jumbo;
-      margin-bottom: 13px;
-      max-height: 38px;
+      margin-bottom: 10px;
+      max-height: 2.6em;
       overflow: hidden;
     }
     .recipe-people {
@@ -704,12 +713,14 @@ body, html {
     line-height: 1.45em;
   }
   .ingredients-section {
-    margin-top: 3px;
+    margin-top: 5px;
   }
   .ingredient-container {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     font-weight: 700 !important;
     font-size: 16px !important;
+    padding-left: 1.5em;
+    text-indent: -1.5em;
   }
   .ingredient-container, .step-container {
     @extend .body-font;
@@ -800,6 +811,13 @@ body, html {
   .header-bar {
     .drafts-link, .new-button {
       display: none;
+    }
+  }
+  .site-nav-logo {
+    height:20px !important;
+    svg {
+      height:21px;
+      width: 98px;
     }
   }
 }

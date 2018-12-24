@@ -286,9 +286,14 @@ class App extends React.Component {
       recipesToDisplay = drafts;
     }
 
-    const recipeList = recipesToDisplay.map((r, i) => {
-      return <RecipeListItem key={i} refresh={refreshRecipes} recipe={r} onRecipeClick={this.handleRecipeClick} />
-    });
+    let recipeList;
+    if (recipesToDisplay.length < 1 && ((draftsOpen && !loadingDraftsPage) || (!draftsOpen && !loadingRecipesPage)))  {
+      recipeList = <div className='empty-notice'>No recipes. {draftsOpen ? "Click 'New Recipe' above to create a draft!" : "Try broadening your search."}</div>
+    } else {
+      recipeList = recipesToDisplay.map((r) => {
+        return <RecipeListItem key={r.id} refresh={refreshRecipes} recipe={r} onRecipeClick={this.handleRecipeClick} />
+      });
+    }
 
     return (
       <React.Fragment>
