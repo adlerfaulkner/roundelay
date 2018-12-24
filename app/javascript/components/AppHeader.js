@@ -14,7 +14,7 @@ class AppHeader extends React.Component {
       draftsOpen } = this.props;
     let headerButtons, leftButtons;
 
-    if (accountModalOpen || editRecipe  || openRecipe) {
+    if (accountModalOpen || editRecipe  || openRecipe || draftsOpen) {
       leftButtons = <div className='close-button non-border-link' onClick={onCloseButtonClick}>Close</div>;
     }
 

@@ -8,6 +8,21 @@ import RecipeEditor from "./RecipeEditor.js"
 import Recipe from "./Recipe.js"
 import RecipeView from "./RecipeView.js"
 
+function arrayUniqueById(array) {
+  let a = array.concat();
+  if (a.length == 1) {
+    return a;
+  }
+  for (let i=0; i < a.length-2; i++) {
+    for (let j=i+1; j < a.length-1; j++) {
+      if (i != j && a[j] && a[i] && a[i].id == a[j].id) {
+        a.splice(j, 1);
+      }
+    }
+  }
+  return a;
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -130,7 +145,15 @@ class App extends React.Component {
     this.setState({ recipeEditorSaveState: saveState });
   }
   handleEditorRecipeChange(recipe) {
-    this.setState({ editRecipe: recipe });
+    this.setState((prevState) => {
+      const newState = { editRecipe: recipe };
+      if (!recipe.published) {
+        const newDrafts = prevState.drafts;
+        newDrafts.unshift(recipe);
+        newState.drafts = arrayUniqueById(newDrafts);
+      }
+      return newState
+    });
   }
   handleSearchTextChange(e) {
     const self = this;
