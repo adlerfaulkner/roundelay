@@ -62,8 +62,19 @@ class App extends React.Component {
     this.handleRecipeListScroll = this.handleRecipeListScroll.bind(this);
     this.handleDraftsClick = this.handleDraftsClick.bind(this);
     this.loadDrafts = this.loadDrafts.bind(this);
+    this.handleLogoClick = this.handleLogoClick.bind(this);
   }
-
+  handleLogoClick(e) {
+    e.preventDefault();
+    this.setState({
+      loginModal: false,
+      signUpModal: false,
+      openRecipe: null,
+      draftsOpen: false,
+      editRecipe: null,
+      recipeEditorSaveState: null
+    });
+  }
   openSignUpModal() {
     this.setState({loginModal: false, signUpModal: true});
   }
@@ -282,8 +293,9 @@ class App extends React.Component {
             editRecipe={editRecipe}
             openRecipe={openRecipe}
             draftsOpen={draftsOpen}
-            recipeEditorSaveState={recipeEditorSaveState} />
-          <div className='page-header'>
+            recipeEditorSaveState={recipeEditorSaveState}
+            onLogoClick={this.handleLogoClick} />
+          <div className='page-header'><div className='border-container'>
             { draftsOpen ?
               <div className='header-text'>Your Drafts</div>
               :
@@ -292,7 +304,7 @@ class App extends React.Component {
                 placeholder={"Search by title, description, ingredient, or writer"}
                 onChange={this.handleSearchTextChange} />
             }
-          </div>
+          </div></div>
           <div className='recipe-list'>
             { recipeList }
             { ((draftsOpen && loadingDraftsPage) || (!draftsOpen && loadingRecipesPage)) && <div className='loading-icon'></div>}

@@ -14,10 +14,6 @@ class AppHeader extends React.Component {
       draftsOpen } = this.props;
     let headerButtons, leftButtons;
 
-    if (accountModalOpen || editRecipe  || openRecipe || draftsOpen) {
-      leftButtons = <div className='close-button non-border-link' onClick={onCloseButtonClick}>Close</div>;
-    }
-
     if (!accountModalOpen) {
       let loginButtons;
 
@@ -35,19 +31,22 @@ class AppHeader extends React.Component {
       } else if (currentUser) {
         const avatar = <Avatar user={currentUser}/>
         headerButtons = <div className='login-wrapper'>
-            { editRecipe == null && <button className='new-button fill-link' onClick={onNewRecipeClick}>New Recipe</button> }
-            <Dropdown buttonContents={avatar} align={'right'}>
+            <button className='black-non-border-link margin-button drafts-link' onClick={onDraftsClick}>Drafts</button>
+            <Dropdown classes={'margin-button'} buttonContents={avatar} align={'right'}>
               <button className='dropdown-option' onClick={onNewRecipeClick}>New recipe</button>
               <button className='dropdown-option' onClick={onDraftsClick}>Drafts</button>
               <button className='dropdown-option logout-button' onClick={onLogoutClick}>Log Out</button>
             </Dropdown>
+            { editRecipe == null && <button className='new-button fill-link' onClick={onNewRecipeClick}>New Recipe</button> }
           </div>
       } else {
         headerButtons = <div className='login-wrapper'>
-          <button className='login-button non-border-link' onClick={this.props.onLoginClick}>Log In</button>
+          <button className='login-button black-non-border-link margin-button' onClick={this.props.onLoginClick}>Log In</button>
           <button className='signup-button fill-link' onClick={this.props.onSignUpClick}>Sign Up</button>
         </div>
       }
+    } else {
+      headerButtons = <div className='login-wrapper'><div className='close-button non-border-link' onClick={onCloseButtonClick}>Close</div></div>;
     }
 
     return (
@@ -55,7 +54,7 @@ class AppHeader extends React.Component {
         <div className='centering'>
           { leftButtons }
           <div className='logo-container'>
-            <a href="" className='site-nav-logo'>
+            <a href="" className='site-nav-logo' onClick={this.props.onLogoClick}>
               <svg width="163px" height="35px" viewBox="0 0 163 35">
                   <title>Roundelay</title>
                   <defs></defs>

@@ -214,10 +214,20 @@ a {
   color: $link-color;
   outline: none;
   border:none;
-  line-height: 1.4em;
 
   &:hover {
     color: $link-hover-color;
+  }
+}
+.black-non-border-link {
+  @extend .base-font;
+  @extend .link;
+  color: $oil;
+  outline: none;
+  border:none;
+
+  &:hover {
+    color: black;
   }
 }
 .border-link {
@@ -249,6 +259,9 @@ a {
     background-color: $link-hover-color;
   }
 }
+.margin-button {
+  margin-right: 15px;
+}
 body, html {
   padding: 0;
   margin: 0;
@@ -273,12 +286,15 @@ body, html {
   background-color: rgba(255,255,255,0.7);
 }
 .page-header {
-  border-bottom: 1px solid $silver;
   margin: 0 auto;
-  min-width: 400px;
   max-width: 950px;
   width:75%;
-  padding: 25px 0;
+
+  .border-container {
+    width:100%;
+    padding: 25px 0;
+    border-bottom: 1px solid $silver;
+  }
 
   input {
     width:100%;
@@ -307,7 +323,6 @@ body, html {
   left:0;
   right:0;
   margin: 0 auto;
-  min-width: 400px;
   max-width: 950px;
   width:75%;
   padding-bottom: 100px;
@@ -393,9 +408,9 @@ body, html {
   .centering {
     left: 0;
     right:0;
-    max-width: 1200px;
-    height: 65px;
-    padding: 0 20px;
+    width: 75%;
+    max-width: 950px;
+    height: 70px;
     margin: 0 auto;
     @include flexbox();
     @include align-items(center);
@@ -405,11 +420,6 @@ body, html {
   .logo-container {
     z-index: 1;
     text-align: center;
-    position: absolute;
-    left: 0;
-    right:0;
-    top:0;
-    bottom:0;
     @include flexbox();
     @include align-items(center);
     @include justify-content(center);
@@ -430,10 +440,6 @@ body, html {
       font-size: 15px !important;
       color: $aluminum;
       margin-right:15px;
-    }
-
-    .login-button, .new-button {
-      margin-right: 17px;
     }
     .publish-button-dropdown .dropdown {
       width:300px;
@@ -675,7 +681,6 @@ body, html {
 }
 .page-width {
   margin: 0 auto;
-  min-width: 400px;
   max-width: 950px;
   width:85%;
 }
@@ -685,16 +690,6 @@ body, html {
 
   .recipe-body {
     @include flexbox();
-
-    .steps-section {
-      @include flex(3);
-      min-width: 400px;
-    }
-    .ingredients-section {
-      @include flex(1);
-      max-width: 450px;
-      min-width: 280px;
-    }
   }
   .title-container {
     @extend .title-font;
@@ -779,10 +774,32 @@ body, html {
       margin-right: 8%;
     }
   }
+  .steps-section {
+    @include flex(3);
+    min-width: 400px;
+  }
+  .ingredients-section {
+    @include flex(1);
+    max-width: 450px;
+    min-width: 280px;
+  }
 }
 
 @media only screen and (max-width: 700px ) {
   .recipe-body {
     @include flex-direction(column);
+  }
+  .ingredients-section {
+    margin-bottom: 50px;
+  }
+  .page-header, .recipe-list, .header-bar .centering, .page-width {
+    width:100%;
+    padding-left:20px;
+    padding-right: 20px;
+  }
+  .header-bar {
+    .drafts-link, .new-button {
+      display: none;
+    }
   }
 }
