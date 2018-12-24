@@ -364,6 +364,8 @@ body, html {
       }
       color: $jumbo;
       margin-bottom: 13px;
+      max-height: 38px;
+      overflow: hidden;
     }
     .recipe-people {
       font: {
@@ -432,6 +434,15 @@ body, html {
 
     .login-button, .new-button {
       margin-right: 17px;
+    }
+    .publish-button-dropdown .dropdown {
+      width:300px;
+      right:0;
+    }
+    .cannot-publish-notice {
+      @extend  .base-font;
+      color:$oil;
+      padding: 15px;
     }
   }
   .user-avatar {

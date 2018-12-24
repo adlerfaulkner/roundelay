@@ -27,7 +27,7 @@ class AppHeader extends React.Component {
           { (editRecipe.id != null && $.trim(editRecipe.title).length > 0) ?
             <button className='publish-button fill-link' onClick={onPublishClick}>Publish</button>
             :
-            <Dropdown buttonContents={<button className='publish-button fill-link inactive'>Publish</button>}>
+            <Dropdown classes="publish-button-dropdown" align={'right'} buttonContents={<button className='publish-button fill-link inactive'>Publish</button>}>
               <div className='cannot-publish-notice'>Add a title to your recipe before publishing it!</div>
             </Dropdown>
           }

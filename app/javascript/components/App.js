@@ -5,7 +5,7 @@ import Modal from "./Modal.js"
 import LoginForm from "./LoginForm.js"
 import SignUpForm from "./SignUpForm.js"
 import RecipeEditor from "./RecipeEditor.js"
-import Recipe from "./Recipe.js"
+import RecipeListItem from "./RecipeListItem.js"
 import RecipeView from "./RecipeView.js"
 
 function arrayUniqueById(array) {
@@ -263,7 +263,7 @@ class App extends React.Component {
     }
 
     const recipeList = recipesToDisplay.map((r, i) => {
-      return <Recipe key={i} recipe={r} onRecipeClick={this.handleRecipeClick} />
+      return <RecipeListItem key={i} recipe={r} onRecipeClick={this.handleRecipeClick} />
     });
 
     return (

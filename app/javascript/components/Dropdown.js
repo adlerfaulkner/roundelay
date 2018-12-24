@@ -30,6 +30,7 @@ class Dropdown extends React.Component {
   render () {
     const open = this.state.open;
     const align = this.props.align;
+    const classes = (this.props.classes || "") + " dropdown-container";
     let dropdownStyle = {};
     if (align == 'right') {
       dropdownStyle.right = '0px';
@@ -38,7 +39,7 @@ class Dropdown extends React.Component {
     }
 
     return (
-      <div className='dropdown-container' onClick={this.handleButtonClick} ref={this.dropdownRef}>
+      <div className={classes} onClick={this.handleButtonClick} ref={this.dropdownRef}>
         <div className='dropdown-button'>{this.props.buttonContents}</div>
         { open && <div className='dropdown' style={dropdownStyle}>{this.props.children}</div>}
       </div>
