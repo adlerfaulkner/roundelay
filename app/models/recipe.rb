@@ -49,6 +49,7 @@ class Recipe < ApplicationRecord
   default_scope { order(created_at: :desc) }
   scope :published, -> { where(published: true ) }
   scope :unpublished, -> { where(published: false ) }
+  scope :written_by, -> (user) { where(writer_id: user.id) }
 
   settings index: { number_of_shards: 1 } do
     mappings dynamic: 'false' do
@@ -84,10 +85,10 @@ class Recipe < ApplicationRecord
 
   def as_json(*)
     super.except("creator_id", "writer_id", "updated_at", "created_at").tap do |recipe|
-      recipe["creator"] = self.creator&.to_json
-      recipe["writer"] = self.writer&.to_json
-      recipe["steps"] = self.steps.map(&:to_json)
-      recipe["ingredients"] = self.ingredients.map(&:to_json)
+      recipe["creator"] = self.creator&.as_json
+      recipe["writer"] = self.writer&.as_json
+      recipe["steps"] = self.steps.map(&:as_json)
+      recipe["ingredients"] = self.ingredients.map(&:as_json)
     end
   end
 

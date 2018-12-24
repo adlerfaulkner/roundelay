@@ -37,9 +37,23 @@ class RecipeEditor extends React.Component {
       id: recipe.id,
       title: recipe.title,
       description: recipe.description,
-      ingredients: recipe.ingredients,
+      ingredients: recipe.ingredients.map((ingredient) => {
+        return {
+          position: ingredient.position,
+          innerRef: React.createRef(),
+          id: ingredient.id,
+          text: ingredient.text
+        }
+      }),
       prevIngredients: recipe.ingredients,
-      steps: recipe.steps,
+      steps: recipe.steps.map((step) => {
+        return {
+          position: step.position,
+          innerRef: React.createRef(),
+          id: step.id,
+          text: step.text
+        }
+      }),
       prevSteps: recipe.steps,
       creator: recipe.creator,
       writer: recipe.writer
@@ -154,8 +168,8 @@ class RecipeEditor extends React.Component {
       method: method,
       success: function(respData) {
         self.props.onSaveStateUpdate("Saved");
-        const newIngredients = respData.ingredients.map((i) => JSON.parse(i));
-        const newSteps = respData.steps.map((i) => JSON.parse(i));
+        const newIngredients = respData.ingredients
+        const newSteps = respData.steps
         self.setState((prevState) => {
           return {
             prevIngredients: newIngredients,
@@ -164,11 +178,15 @@ class RecipeEditor extends React.Component {
             saved: true,
             id: respData.id,
             ingredients: prevState.ingredients.map((ingredient, i) => {
-              ingredient.id = newIngredients[i].id;
+              if (newIngredients[i]) {
+                ingredient.id = newIngredients[i].id;
+              }
               return ingredient;
             }),
             steps: prevState.steps.map((step, i) => {
-              step.id = newSteps[i].id;
+              if (newSteps[i]) {
+                step.id = newSteps[i].id;
+              }
               return step;
             })
           }
@@ -270,9 +288,13 @@ class RecipeEditor extends React.Component {
   }
   componentDidMount() {
     const self = this;
+    const { recipe } = this.props;
     setTimeout(function() {
       self.titleRef.current.focus();
     });
+    if (recipe.id != null) {
+      this.props.onSaveStateUpdate("Saved");
+    }
   }
   render () {
     const { title, description, ingredients, steps, creator, writer } = this.state;

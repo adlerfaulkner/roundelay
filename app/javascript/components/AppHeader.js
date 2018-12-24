@@ -10,7 +10,8 @@ class AppHeader extends React.Component {
   render () {
     const { currentUser, accountModalOpen, onCloseButtonClick, editRecipe,
       onNewRecipeClick, onPublishClick, onLoginClick, onLogoutClick,
-      onSignUpClick, recipeEditorSaveState, openRecipe } = this.props;
+      onSignUpClick, recipeEditorSaveState, openRecipe, onDraftsClick,
+      draftsOpen } = this.props;
     let headerButtons, leftButtons;
 
     if (accountModalOpen || editRecipe  || openRecipe) {
@@ -37,6 +38,7 @@ class AppHeader extends React.Component {
             { editRecipe == null && <button className='new-button fill-link' onClick={onNewRecipeClick}>New Recipe</button> }
             <Dropdown buttonContents={avatar} align={'right'}>
               <button className='dropdown-option' onClick={onNewRecipeClick}>New recipe</button>
+              <button className='dropdown-option' onClick={onDraftsClick}>Drafts</button>
               <button className='dropdown-option logout-button' onClick={onLogoutClick}>Log Out</button>
             </Dropdown>
           </div>

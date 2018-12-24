@@ -13,12 +13,12 @@ class RecipeView extends React.Component {
       displayTitle = "Untitled";
     }
     const ingredientsList = ingredients.map((ingredient, i) => {
-      return <div key={i} className='ingredient-container'>{JSON.parse(ingredient).text}</div>;
+      return <div key={i} className='ingredient-container'>{ingredient.text}</div>;
     });
     const stepsList = steps.map((step, i) => {
       return <div key={i} className='step-container'>
         <div className='step-number'>{i+1}</div>
-        <div className='step-text'>{JSON.parse(step).text}</div>
+        <div className='step-text'>{step.text}</div>
       </div>;
     });
 

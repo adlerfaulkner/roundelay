@@ -18,11 +18,17 @@ class App extends React.Component {
       editRecipe: null,
       recipeEditorSaveState: null,
       recipesPage: 1,
+      recipes: [],
       loadingRecipesPage: false,
       initialRecipesLoad: false,
-      hasNextPage: true,
+      hasNextRecipesPage: true,
       searchText: "",
-      recipes: [],
+      draftsOpen: false,
+      drafts: [],
+      draftsPage: 1,
+      initialDraftsLoad: false,
+      loadingDraftsPage: false,
+      hasNextDraftsPage: true,
       openRecipe: null,
       publishing: false
     };
@@ -39,6 +45,8 @@ class App extends React.Component {
     this.handleSearchTextChange = this.handleSearchTextChange.bind(this);
     this.handleRecipeClick = this.handleRecipeClick.bind(this);
     this.handleRecipeListScroll = this.handleRecipeListScroll.bind(this);
+    this.handleDraftsClick = this.handleDraftsClick.bind(this);
+    this.loadDrafts = this.loadDrafts.bind(this);
   }
 
   openSignUpModal() {
@@ -48,20 +56,24 @@ class App extends React.Component {
     this.setState({loginModal: true, signUpModal: false});
   }
   closeModals() {
-    this.setState({
-      loginModal: false,
-      signUpModal: false,
-      editRecipe: null,
-      recipeEditorSaveState: null,
-      openRecipe: null
-    });
+    const { editRecipe } = this.state;
+    if (editRecipe) {
+      this.setState({ editRecipe: null, recipeEditorSaveState: null, });
+    } else {
+      this.setState({
+        loginModal: false,
+        signUpModal: false,
+        openRecipe: null,
+        draftsOpen: false
+      });
+    }
   }
   createNewRecipe() {
     const newRecipe = {
       title: "",
       description: "",
-      ingredients: [{ text: "", innerRef: React.createRef() }],
-      steps: [{ text: "", innerRef: React.createRef() }],
+      ingredients: [{ text: "" }],
+      steps: [{ text: "" }],
       creator: this.props.currentUser,
       writer: this.props.currentUser
     }
@@ -101,6 +113,7 @@ class App extends React.Component {
           newRecipes.unshift(respData);
           return {
             recipes: newRecipes,
+            drafts: prevState.drafts.filter((d) => d.id != respData.id),
             editRecipe: null,
             recipeEditorSaveState: null,
             publishing: false,
@@ -140,49 +153,95 @@ class App extends React.Component {
       data: params,
       dataType: 'JSON',
       success: function(respData) {
-        const recipes = respData.recipes.map((res) => JSON.parse(res));
+        const recipes = respData.recipes
         self.setState((prevState) => {
           return {
             initialRecipesLoad: true,
             loadingRecipesPage: false,
             recipes: (loadPage ? prevState.recipes.concat(recipes) : recipes),
             recipesPage: params.page,
-            hasNextPage: !respData.last_page
+            hasNextRecipesPage: !respData.last_page
           }
         });
       }
     });
   }
   handleRecipeClick(recipe) {
-    this.setState({ openRecipe: recipe });
+    if (recipe.published) {
+      this.setState({ openRecipe: recipe });
+    } else {
+      this.setState({ editRecipe: recipe });
+    }
   }
   handleRecipeListScroll(e) {
     const DOMscrollContainer = e.target;
-    const { hasNextPage, loadingRecipesPage } = this.state;
-    if (!loadingRecipesPage && hasNextPage && DOMscrollContainer.scrollTop + 800 > (DOMscrollContainer.scrollHeight - DOMscrollContainer.clientHeight)) {
-      this.getRecipesPage(true);
+    const { hasNextRecipesPage, loadingRecipesPage, draftsOpen } = this.state;
+    if (!loadingRecipesPage && hasNextRecipesPage && DOMscrollContainer.scrollTop + 800 > (DOMscrollContainer.scrollHeight - DOMscrollContainer.clientHeight)) {
+      if (draftsOpen) {
+        this.loadDrafts(true);
+      } else {
+        this.getRecipesPage(true);
+      }
     }
   }
+  handleDraftsClick() {
+    this.setState({ draftsOpen: true });
+  }
+  loadDrafts(loadPage) {
+    this.setState({ loadingDraftsPage: true });
+    const { draftsPage } = this.state;
+    const params = { page: (loadPage ? draftsPage+1 : 1)};
+    const self = this;
+    this._ajaxRecipesRequest = $.get({
+      url: '/api/v1/recipes/drafts',
+      data: params,
+      dataType: 'JSON',
+      success: function(respData) {
+        const drafts = respData.drafts
+        self.setState((prevState) => {
+          return {
+            initialDraftsLoad: true,
+            loadingDraftsPage: false,
+            drafts: (loadPage ? prevState.drafts.concat(drafts) : drafts),
+            draftsPage: params.page,
+            hasNextDraftsPage: !respData.last_page
+          }
+        });
+      }
+    });
+  }
   componentDidMount() {
-    const { initialRecipesLoad, loadingRecipesPage } = this.state;
+    const { initialRecipesLoad, loadingRecipesPage, draftsOpen, initialDraftsLoad, loadingDraftsPage } = this.state;
     if (!initialRecipesLoad && !loadingRecipesPage) {
       this.getRecipesPage();
+    }
+    if (draftsOpen && !initialDraftsLoad && !loadingDraftsPage) {
+      this.loadDrafts();
     }
   }
   componentDidUpdate() {
-    const { initialRecipesLoad, loadingRecipesPage } = this.state;
+    const { initialRecipesLoad, loadingRecipesPage, draftsOpen, initialDraftsLoad, loadingDraftsPage } = this.state;
     if (!initialRecipesLoad && !loadingRecipesPage) {
       this.getRecipesPage();
+    }
+    if (draftsOpen && !initialDraftsLoad && !loadingDraftsPage) {
+      this.loadDrafts();
     }
   }
 
   render () {
     const { currentUser, signUpModal, loginModal, editRecipe, publishing,
-      recipeEditorSaveState, recipes, searchText, openRecipe, loadingRecipesPage } = this.state;
-    const recipeList = recipes.map((r, i) => {
+      recipeEditorSaveState, recipes, searchText, openRecipe, loadingRecipesPage,
+      draftsOpen, drafts, loadingDraftsPage } = this.state;
+
+    let recipesToDisplay = recipes;
+    if (draftsOpen) {
+      recipesToDisplay = drafts;
+    }
+
+    const recipeList = recipesToDisplay.map((r, i) => {
       return <Recipe key={i} recipe={r} onRecipeClick={this.handleRecipeClick} />
     });
-
 
     return (
       <React.Fragment>
@@ -193,21 +252,27 @@ class App extends React.Component {
             onSignUpClick={this.openSignUpModal}
             onLoginClick={this.openLoginModal}
             onNewRecipeClick={this.createNewRecipe}
+            onDraftsClick={this.handleDraftsClick}
             onLogoutClick={this.logout}
             onPublishClick={this.publish}
             accountModalOpen={signUpModal || loginModal}
             editRecipe={editRecipe}
             openRecipe={openRecipe}
+            draftsOpen={draftsOpen}
             recipeEditorSaveState={recipeEditorSaveState} />
-          <div className='recipe-search'>
-            <input type='text' val={searchText}
-              className='recipe-search-input'
-              placeholder={"Search by title, description, ingredient, or writer"}
-              onChange={this.handleSearchTextChange} />
+          <div className='page-header'>
+            { draftsOpen ?
+              <div className='header-text'>Your Drafts</div>
+              :
+              <input type='text' val={searchText}
+                className='recipe-search-input'
+                placeholder={"Search by title, description, ingredient, or writer"}
+                onChange={this.handleSearchTextChange} />
+            }
           </div>
           <div className='recipe-list'>
             { recipeList }
-            {loadingRecipesPage && <div className='loading-icon'></div>}
+            { ((draftsOpen && loadingDraftsPage) || (!draftsOpen && loadingRecipesPage)) && <div className='loading-icon'></div>}
           </div>
         </div>
         { loginModal &&
