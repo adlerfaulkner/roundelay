@@ -22,7 +22,8 @@ $black       : #000000;
 $font-stack  : "Helvetica Neue", Helvetica, Arial, sans-serif;
 $body-font-stack : Georgia, serif;
 $link-color : #d01257;
-$link-hover-color : darken($link-color, 10%);
+$link-hover-color : darken($link-color, 12%);
+$link-background-color : lighten(#ffcee4, 5%);
 
 @mixin flexbox() {
   display: -webkit-box;
@@ -163,7 +164,7 @@ a {
 }
 .base-font {
   font: {
-    size: 18px;
+    size: 17px;
     weight:400;
     family: $font-stack;
   }
@@ -213,6 +214,7 @@ a {
   color: $link-color;
   outline: none;
   border:none;
+  line-height: 1.4em;
 
   &:hover {
     color: $link-hover-color;
@@ -227,6 +229,7 @@ a {
   @include rounded-corners(5px);
 
   &:hover {
+    cursor: pointer;
     color: $link-hover-color;
     border-color: $link-hover-color;
   }
@@ -245,6 +248,29 @@ a {
   &:hover {
     background-color: $link-hover-color;
   }
+}
+body, html {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+#container {
+  padding-top: 70px;
+  overflow-y: auto;
+  position: absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+.loading-overlay {
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index: 1000;
+  background-color: rgba(255,255,255,0.7);
 }
 .recipe-search {
   border-bottom: 1px solid $silver;
@@ -268,10 +294,40 @@ a {
   }
 }
 .recipe-list {
+  left:0;
+  right:0;
   margin: 0 auto;
   min-width: 400px;
   max-width: 950px;
   width:75%;
+  padding-bottom: 100px;
+
+  .loading-icon {
+    margin: 25px 0;
+    height:20px;
+    width:20px;
+    -webkit-animation: rotation 0.4s infinite linear;
+    -moz-animation: rotation 0.4s infinite linear;
+    -o-animation: rotation 0.4s infinite linear;
+    animation: rotation 0.4s infinite linear;
+    border:4px solid transparent;
+    border-radius:100%;
+
+    &:before {
+      content:"";
+      display:block;
+      position:absolute;
+      left:-4px;
+      top:-4px;
+      height:100%;
+      width:100%;
+      border-top:4px solid $oil;
+      border-left:4px solid $oil;
+      border-bottom:4px solid transparent;
+      border-right:4px solid transparent;
+      border-radius:100%;
+    }
+  }
 
   .recipe-container {
     border-bottom: 1px solid $silver;
@@ -313,14 +369,26 @@ a {
   }
 }
 .header-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:100%;
   z-index: 700;
-  margin: 0 auto;
-  max-width: 1200px;
-  height: 65px;
-  padding: 0 20px;
-  @include flexbox();
-  @include align-items(center);
-  position: relative;
+  height:90px;
+  background-image: white;
+  background-image: linear-gradient(white, transparent);
+
+  .centering {
+    left: 0;
+    right:0;
+    max-width: 1200px;
+    height: 65px;
+    padding: 0 20px;
+    margin: 0 auto;
+    @include flexbox();
+    @include align-items(center);
+    position: relative;
+  }
 
   .logo-container {
     z-index: 1;
@@ -347,6 +415,7 @@ a {
 
     .save-state {
       @extend .base-font;
+      font-size: 15px !important;
       color: $aluminum;
       margin-right:15px;
     }
@@ -512,7 +581,7 @@ a {
     }
 
     &:not([type='submit']) {
-      background-color: lighten(#ffcee4, 5%);
+      background-color: $link-background-color;
       color: black;
 
       &:hover {
@@ -556,6 +625,7 @@ a {
 
 
     .dropdown-option {
+      text-align: left;
       width:100%;
       min-width: 100%;
       display: block;
@@ -570,6 +640,15 @@ a {
         background-color: $white-smoke;
         color: $oil;
       }
+
+      &.logout-button {
+        color:$link-color;
+
+        &:hover {
+          background-color: $link-background-color;
+          color:$link-hover-color;
+        }
+      }
     }
   }
 }
@@ -579,10 +658,69 @@ a {
   max-width: 950px;
   width:85%;
 }
-.recipe-editor {
+.recipe-page {
   padding-top: 120px;
   padding-bottom: calc(50vh - 100px);
 
+  .recipe-body {
+    @include flexbox();
+
+    .steps-section {
+      @include flex(3);
+      min-width: 400px;
+    }
+    .ingredients-section {
+      @include flex(1);
+      max-width: 450px;
+      min-width: 280px;
+    }
+  }
+  .title-container {
+    @extend .title-font;
+  }
+  .description-container {
+    @extend .description-font;
+    width:75%;
+    max-width: 600px;
+    left: 0;
+    right:0;
+    margin: 15px auto 70px auto;
+    line-height: 1.45em;
+  }
+  .ingredients-section {
+    margin-top: 3px;
+  }
+  .ingredient-container {
+    margin-bottom: 5px;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+  }
+  .ingredient-container, .step-container {
+    @extend .body-font;
+    line-height: 1.45em;
+    position: relative;
+  }
+  .step-container {
+    margin-bottom: 15px;
+
+    .step-number {
+      position: absolute;
+      top: 0;
+      left:0;
+      font-weight: 700;
+    }
+    .contenteditable-placeholder, .contenteditable, .step-text {
+      padding-left: 30px;
+    }
+  }
+}
+.recipe-view {
+  .title-container, .description-container {
+    text-align: center;
+    width: 100%;
+  }
+}
+.recipe-editor {
   .contenteditable-container {
     position: relative;
     width:100%;
@@ -603,70 +741,15 @@ a {
     text-align: center;
     width: 100%;
   }
-  .title-container {
-    @extend .title-font;
-  }
-  .description-container {
-    @extend .description-font;
-    width:75%;
-    max-width: 600px;
-    left: 0;
-    right:0;
-    margin: 15px auto 70px auto;
-    line-height: 1.45em;
-  }
-  .description-container {
-
-  }
-  .recipe-body {
-    @include flexbox();
-
-    .steps-section {
-      @include flex(3);
-      min-width: 400px;
-    }
-    .ingredients-section {
-      @include flex(1);
-      max-width: 450px;
-      min-width: 280px;
-    }
-  }
   .section {
     margin-bottom: 70px;
   }
   .section-list {
     min-height: 100px;
   }
-  .ingredients-section {
-    margin-top: 3px;
-  }
-  .ingredient-container {
-    margin-bottom: 5px;
-    font-weight: 700 !important;
-    font-size: 16px !important;
-  }
-  .ingredient-container, .step-container {
-    @extend .body-font;
-    line-height: 1.45em;
-    position: relative;
-
-    .list-item-editor {
-      min-height: 20px;
-      width: 100%;
-    }
-  }
-  .step-container {
-    margin-bottom: 15px;
-
-    .contenteditable-placeholder, .contenteditable {
-      padding-left: 30px;
-    }
-    .step-number {
-      position: absolute;
-      top: 0;
-      left:0;
-      font-weight: 700;
-    }
+  .list-item-editor {
+    min-height: 20px;
+    width: 100%;
   }
 }
 @media only screen and (min-width: 700px ) {

@@ -11,7 +11,7 @@
 #
 
 class Step < ApplicationRecord
-  belongs_to :recipe, inverse_of: :steps
+  belongs_to :recipe, inverse_of: :steps, touch: true
 
   validates_presence_of :recipe
   validates_uniqueness_of :position, scope: :recipe_id

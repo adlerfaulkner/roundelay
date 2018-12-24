@@ -11,7 +11,7 @@
 #
 
 class Ingredient < ApplicationRecord
-  belongs_to :recipe, inverse_of: :ingredients
+  belongs_to :recipe, inverse_of: :ingredients, touch: true
 
   validates_presence_of :recipe
   validates_uniqueness_of :position, scope: :recipe_id

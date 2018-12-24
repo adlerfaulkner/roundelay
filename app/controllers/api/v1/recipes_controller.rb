@@ -3,15 +3,12 @@ class Api::V1::RecipesController < ApplicationController
 
   def index
     page = params[:page] ? params[:page].to_i : 1
+    per_page = 20
 
     if params[:q].blank?
-      recipes = Recipe.published.page(page).per(50)
+      recipes = Recipe.published.page(page).per(per_page)
     else
-      search = Recipe.search do
-        fulltext params[:q].downcase
-        paginate page: page, per_page: 50
-      end
-      recipes = search.results
+      recipes = Recipe.search(params[:q].downcase).page(page).per(per_page).records
     end
     last_page = recipes.last_page?
     render json: { recipes: recipes.map(&:to_json), last_page: last_page }, status: 200
@@ -64,7 +61,7 @@ class Api::V1::RecipesController < ApplicationController
       steps_attributes: [ :id, :text, :position, :_destroy ])
   end
   def edit_recipe_params
-    params.require(:recipe).permit(:id, :title, :description,
+    params.require(:recipe).permit(:id, :title, :description, :published,
       ingredients_attributes: [ :id, :text, :position ],
       steps_attributes: [ :id, :text, :position ])
   end

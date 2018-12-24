@@ -23,6 +23,8 @@ class User < ApplicationRecord
   has_many :created_recipes, class_name: 'Recipe', foreign_key: :creator_id
   has_many :written_recipes, class_name: 'Recipe', foreign_key: :creator_id
 
+  after_update { self.written_recipes.each(&:touch) }
+
   VALID_EMAIL_REGEX = /@/i
   validates :email,
     length: { maximum: 255 },

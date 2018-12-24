@@ -310,7 +310,7 @@ class RecipeEditor extends React.Component {
     });
 
     return (
-      <div className='recipe-editor page-width'>
+      <div className='recipe-editor page-width recipe-page'>
         <div className='title-container contenteditable-container'>
           <div className='title-placeholder contenteditable-placeholder' style={titlePlaceholderStyle}>{this.titlePlaceholder}</div>
           <TitleEditor title={title}

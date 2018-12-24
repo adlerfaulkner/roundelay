@@ -12,8 +12,15 @@
 #
 
 class Recipe < ApplicationRecord
-  has_many :ingredients, inverse_of: :recipe, dependent: :destroy
-  has_many :steps, inverse_of: :recipe, dependent: :destroy
+  include Elasticsearch::Model
+  include ActiveModel::Dirty
+
+  has_many :ingredients, inverse_of: :recipe, dependent: :destroy,
+    after_add: [ lambda { |r,i| r.__elasticsearch__.index_document } ],
+    after_remove: [ lambda { |r,i| r.__elasticsearch__.index_document } ]
+  has_many :steps, inverse_of: :recipe, dependent: :destroy,
+    after_add: [ lambda { |r,s| r.__elasticsearch__.index_document } ],
+    after_remove: [ lambda { |r,s| r.__elasticsearch__.index_document } ]
   belongs_to :creator, class_name: 'User'
   belongs_to :writer, class_name: 'User'
 
@@ -21,24 +28,58 @@ class Recipe < ApplicationRecord
   validates :ingredients, presence: true
   validates :steps, presence: true
 
+  after_commit on: [:create] do
+    __elasticsearch__.index_document if self.published?
+  end
+
+  after_commit on: [:update] do
+    if self.previous_changes.key?("published") && !self.previous_changes["published"].first && self.previous_changes["published"].last
+      __elasticsearch__.index_document
+    elsif self.published?
+      __elasticsearch__.update_document
+    end
+  end
+
+  after_commit on: [:destroy] do
+    __elasticsearch__.delete_document if self.published?
+  end
+
   accepts_nested_attributes_for :ingredients, :steps, allow_destroy: true
 
   default_scope { order(created_at: :desc) }
   scope :published, -> { where(published: true ) }
   scope :unpublished, -> { where(published: false ) }
 
-  searchable :if => :published do
-    text :text, as: :text_textinc do
-      text_for_search.downcase
+  settings index: { number_of_shards: 1 } do
+    mappings dynamic: 'false' do
+      indexes :title, type: :text, analyzer: :english
+      indexes :description, type: :text, analyzer: :english
+      indexes :body, type: :text, analyzer: :english
     end
   end
 
-  def text_for_search
-    title_for_search = title
-    if title.length < 1
-      title_for_search = 'Untitled'
-    end
-    [title_for_search, description, writer.name, *ingredients.map(&:text), *steps.map(&:text)].join(" ")
+  def self.search(query)
+   __elasticsearch__.search(
+   {
+     query: {
+        multi_match: {
+          query: query,
+          fields: ['title', "description", "body"]
+        }
+      }
+   })
+ end
+
+  def as_indexed_json(options={})
+    {
+      title: title.blank? ? "untitled" : title.downcase,
+      description: description&.downcase,
+      body: body.downcase
+    }
+  end
+
+  def body
+    [*ingredients.map(&:text), *steps.map(&:text)].join(" ")
   end
 
   def as_json(*)

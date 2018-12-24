@@ -6,6 +6,7 @@ import LoginForm from "./LoginForm.js"
 import SignUpForm from "./SignUpForm.js"
 import RecipeEditor from "./RecipeEditor.js"
 import Recipe from "./Recipe.js"
+import RecipeView from "./RecipeView.js"
 
 class App extends React.Component {
   constructor(props) {
@@ -22,6 +23,8 @@ class App extends React.Component {
       hasNextPage: true,
       searchText: "",
       recipes: [],
+      openRecipe: null,
+      publishing: false
     };
     this.openSignUpModal = this.openSignUpModal.bind(this);
     this.openLoginModal = this.openLoginModal.bind(this);
@@ -34,6 +37,8 @@ class App extends React.Component {
     this.handleEditorRecipeChange = this.handleEditorRecipeChange.bind(this);
     this.getRecipesPage = this.getRecipesPage.bind(this);
     this.handleSearchTextChange = this.handleSearchTextChange.bind(this);
+    this.handleRecipeClick = this.handleRecipeClick.bind(this);
+    this.handleRecipeListScroll = this.handleRecipeListScroll.bind(this);
   }
 
   openSignUpModal() {
@@ -43,7 +48,13 @@ class App extends React.Component {
     this.setState({loginModal: true, signUpModal: false});
   }
   closeModals() {
-    this.setState({loginModal: false, signUpModal: false, editRecipe: null, recipeEditorSaveState: null});
+    this.setState({
+      loginModal: false,
+      signUpModal: false,
+      editRecipe: null,
+      recipeEditorSaveState: null,
+      openRecipe: null
+    });
   }
   createNewRecipe() {
     const newRecipe = {
@@ -54,7 +65,7 @@ class App extends React.Component {
       creator: this.props.currentUser,
       writer: this.props.currentUser
     }
-    this.setState({ editRecipe: newRecipe });
+    this.setState({ editRecipe: newRecipe, openRecipe: null });
   }
   logout() {
     this._logoutRequest = $.ajax({
@@ -75,7 +86,32 @@ class App extends React.Component {
     });
   }
   publish() {
-    this.setState({ editRecipe: null, recipeEditorSaveState: null });
+    const self = this;
+    const { editRecipe } = this.state;
+    this.setState({ publishing: true });
+
+    this._ajaxPublishRequest = $.ajax({
+      url: "/api/v1/recipes/" + editRecipe.id,
+      data: { recipe: { published: true } },
+      dataType: 'JSON',
+      method: 'PATCH',
+      success: function(respData) {
+        self.setState((prevState) => {
+          const newRecipes = prevState.recipes;
+          newRecipes.unshift(respData);
+          return {
+            recipes: newRecipes,
+            editRecipe: null,
+            recipeEditorSaveState: null,
+            publishing: false,
+            openRecipe: null
+          }
+        });
+      },
+      error: function(xhr, status) {
+        self.setState({ publishing: false });
+      }
+    });
   }
   handleRecipeEditorStateChange(saveState) {
     this.setState({ recipeEditorSaveState: saveState });
@@ -95,6 +131,7 @@ class App extends React.Component {
     }, 300);
   }
   getRecipesPage(loadPage=false, overrideSearchText=null) {
+    this.setState({ loadingRecipesPage: true });
     const { searchText, recipesPage } = this.state;
     const params = { q: overrideSearchText || searchText, page: (loadPage ? recipesPage+1 : 1) };
     const self = this;
@@ -116,6 +153,16 @@ class App extends React.Component {
       }
     });
   }
+  handleRecipeClick(recipe) {
+    this.setState({ openRecipe: recipe });
+  }
+  handleRecipeListScroll(e) {
+    const DOMscrollContainer = e.target;
+    const { hasNextPage, loadingRecipesPage } = this.state;
+    if (!loadingRecipesPage && hasNextPage && DOMscrollContainer.scrollTop + 800 > (DOMscrollContainer.scrollHeight - DOMscrollContainer.clientHeight)) {
+      this.getRecipesPage(true);
+    }
+  }
   componentDidMount() {
     const { initialRecipesLoad, loadingRecipesPage } = this.state;
     if (!initialRecipesLoad && !loadingRecipesPage) {
@@ -130,13 +177,16 @@ class App extends React.Component {
   }
 
   render () {
-    const { currentUser, signUpModal, loginModal, editRecipe, recipeEditorSaveState, recipes, searchText } = this.state;
+    const { currentUser, signUpModal, loginModal, editRecipe, publishing,
+      recipeEditorSaveState, recipes, searchText, openRecipe, loadingRecipesPage } = this.state;
     const recipeList = recipes.map((r, i) => {
-      return <Recipe key={i} recipe={r} />
+      return <Recipe key={i} recipe={r} onRecipeClick={this.handleRecipeClick} />
     });
+
+
     return (
       <React.Fragment>
-        <div>
+        <div id='container' onScroll={this.handleRecipeListScroll}>
           <AppHeader
             currentUser={currentUser}
             onCloseButtonClick={this.closeModals}
@@ -147,6 +197,7 @@ class App extends React.Component {
             onPublishClick={this.publish}
             accountModalOpen={signUpModal || loginModal}
             editRecipe={editRecipe}
+            openRecipe={openRecipe}
             recipeEditorSaveState={recipeEditorSaveState} />
           <div className='recipe-search'>
             <input type='text' val={searchText}
@@ -154,7 +205,10 @@ class App extends React.Component {
               placeholder={"Search by title, description, ingredient, or writer"}
               onChange={this.handleSearchTextChange} />
           </div>
-          <div className='recipe-list'>{ recipeList }</div>
+          <div className='recipe-list'>
+            { recipeList }
+            {loadingRecipesPage && <div className='loading-icon'></div>}
+          </div>
         </div>
         { loginModal &&
           <Modal centered><LoginForm onSignUpButtonClick={this.openSignUpModal} onLoginComplete={this.loginUser}/></Modal>
@@ -168,6 +222,11 @@ class App extends React.Component {
             onSaveStateUpdate={this.handleRecipeEditorStateChange}
             onEditorRecipeChange={this.handleEditorRecipeChange}/></Modal>
         }
+        { openRecipe != null &&
+          <Modal><RecipeView
+            recipe={openRecipe} /></Modal>
+        }
+        { publishing && <div className='loading-overlay'></div> }
       </React.Fragment>
     );
   }
