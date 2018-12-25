@@ -47,6 +47,9 @@ GEM
       babel-source (>= 4.0, < 6)
       execjs (~> 2.0)
     bcrypt (3.1.12)
+    bonsai-elasticsearch-rails (6.0.0)
+      elasticsearch-model (~> 6)
+      elasticsearch-rails (~> 6)
     builder (3.2.3)
     byebug (9.0.6)
     coffee-rails (4.2.2)
@@ -232,6 +235,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate
+  bonsai-elasticsearch-rails (~> 6)
   byebug (= 9.0.6)
   coffee-rails (= 4.2.2)
   elasticsearch-model (= 6.0.0)
@@ -254,6 +258,9 @@ DEPENDENCIES
   tzinfo-data
   uglifier (= 3.2.0)
   webpacker (= 3.5.5)
+
+RUBY VERSION
+   ruby 2.3.0p0
 
 BUNDLED WITH
    1.16.5
