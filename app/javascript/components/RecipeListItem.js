@@ -53,8 +53,10 @@ class RecipeListItem extends React.Component {
 
     return (
       <div className='recipe-container' onClick={this.handleRecipeClick}>
-        <div className='recipe-title'>{recipe.title || "Untitled"}</div>
-        <div className='recipe-description' ref={this.descContainerRef}><div className='text' ref={this.descTextRef}>{recipe.description} {stepText}</div></div>
+        <div className='recipe-title' dangerouslySetInnerHTML={{__html: recipe.title || "Untitled"}}></div>
+        <div className='recipe-description' ref={this.descContainerRef}>
+          <div className='text' ref={this.descTextRef} dangerouslySetInnerHTML={{__html: recipe.description + " " + stepText }}></div>
+        </div>
         <div className='recipe-people'>Written by {<Avatar user={recipe.writer} />}</div>
       </div>
     );

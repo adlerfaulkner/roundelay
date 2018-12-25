@@ -14,19 +14,19 @@ class RecipeView extends React.Component {
       displayTitle = "Untitled";
     }
     const ingredientsList = ingredients.map((ingredient, i) => {
-      return <div key={i} className='ingredient-container'>{ingredient.text}</div>;
+      return <div key={i} className='ingredient-container' dangerouslySetInnerHTML={{__html: ingredient.text}}></div>;
     });
     const stepsList = steps.map((step, i) => {
       return <div key={i} className='step-container'>
         <div className='step-number'>{i+1}</div>
-        <div className='step-text'>{step.text}</div>
+        <div className='step-text' dangerouslySetInnerHTML={{__html: step.text}}></div>
       </div>;
     });
 
     return (
       <div className='recipe-view page-width recipe-page'>
-        <div className='title-container'>{displayTitle}</div>
-        <div className='description-container'>{description}</div>
+        <div className='title-container' dangerouslySetInnerHTML={{__html: displayTitle}}></div>
+        <div className='description-container' dangerouslySetInnerHTML={{__html:description}}></div>
         <div className='person-container'>Written by {<Avatar user={writer} />}</div>
         <div className='recipe-body'>
           <div className='section ingredients-section'>
