@@ -57,6 +57,7 @@ class Recipe < ApplicationRecord
       indexes :title, type: :text, analyzer: :english
       indexes :description, type: :text, analyzer: :english
       indexes :body, type: :text, analyzer: :english
+      indexes :names, type: :text, analyzer: :english
     end
   end
 
@@ -66,7 +67,7 @@ class Recipe < ApplicationRecord
      query: {
         multi_match: {
           query: query,
-          fields: ['title', "description", "body"]
+          fields: ['title', "description", "body", "names"]
         }
       }
    })
@@ -77,6 +78,7 @@ class Recipe < ApplicationRecord
       title: title.blank? ? "untitled" : title.downcase,
       description: description&.downcase,
       body: body.downcase,
+      names: [writer.name, creator.name].join(" ")
     }
   end
 
