@@ -7,6 +7,7 @@ import TitleEditor from "./TitleEditor.js"
 import DescriptionEditor from "./DescriptionEditor.js"
 import Step from "./Step.js"
 import Ingredient from "./Ingredient.js"
+import Avatar from "./Avatar.js"
 
 function placeCaretAtEnd(el) {
   el.focus();

@@ -709,8 +709,23 @@ body, html {
     max-width: 600px;
     left: 0;
     right:0;
+    margin: 15px auto 15px auto;
+    line-height: 1.45em;
+  }
+  .person-container {
     margin: 15px auto 70px auto;
     line-height: 1.45em;
+    @extend .description-font;
+    width:75%;
+    max-width: 600px;
+    left: 0;
+    right:0;
+    text-align: center;
+    font-size: 16px;
+
+    .user-avatar {
+      display: inline;
+    }
   }
   .ingredients-section {
     margin-top: 5px;
@@ -777,6 +792,12 @@ body, html {
   .list-item-editor {
     min-height: 20px;
     width: 100%;
+  }
+  .description-container {
+    margin: 15px auto 70px auto;
+  }
+  .creator-container {
+    display: inline;
   }
 }
 @media only screen and (min-width: 700px ) {
