@@ -735,7 +735,6 @@ body, html {
     font-weight: 700 !important;
     font-size: 16px !important;
     padding-left: 1.5em;
-    text-indent: -1.5em;
   }
   .ingredient-container, .step-container {
     @extend .body-font;
@@ -761,6 +760,9 @@ body, html {
     text-align: center;
     width: 100%;
   }
+  .ingredient-container {
+    text-indent: -1.5em;
+  }
 }
 .recipe-editor {
   .contenteditable-container {
@@ -782,6 +784,9 @@ body, html {
   .title-editor, .title-placeholder, .description-editor, .description-placeholder {
     text-align: center;
     width: 100%;
+  }
+  .ingredient-container .contenteditable {
+    text-indent: -1.5em;
   }
   .section {
     margin-bottom: 70px;
