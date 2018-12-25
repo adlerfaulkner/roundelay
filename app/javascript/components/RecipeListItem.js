@@ -53,8 +53,6 @@ class RecipeListItem extends React.Component {
     const stepText = recipe.steps.map((s, i) => [i+1, s.text].join(" ")).join(" ");
 
     let personText;
-    console.log(creator)
-    console.log(writer)
     if (writer.id == creator.id) {
       personText = <React.Fragment>Written and created by {<Avatar user={writer} />}</React.Fragment>;
     } else {
