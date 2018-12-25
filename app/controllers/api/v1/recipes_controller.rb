@@ -63,13 +63,13 @@ class Api::V1::RecipesController < ApplicationController
   private
 
   def recipe_params
-    params.require(:recipe).permit(:title, :description,
+    params.require(:recipe).permit(:title, :description, :creator_id,
       ingredients_attributes: [ :id, :text, :position, :_destroy ],
       steps_attributes: [ :id, :text, :position, :_destroy ])
   end
   def edit_recipe_params
     params.require(:recipe).permit(:id, :title, :description, :published,
-      ingredients_attributes: [ :id, :text, :position ],
+      :creator_id, ingredients_attributes: [ :id, :text, :position ],
       steps_attributes: [ :id, :text, :position ])
   end
 end

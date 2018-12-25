@@ -13,6 +13,11 @@ class Api::V1::UsersController < ApplicationController
     render json: user.as_json, status: 200
   end
 
+  def index
+    users = User.search(params[:q]).page(1).per(5).records
+    render json: users.map(&:as_json), status: 200
+  end
+
   private
 
   def user_params

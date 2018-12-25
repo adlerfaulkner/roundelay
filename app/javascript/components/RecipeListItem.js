@@ -49,15 +49,25 @@ class RecipeListItem extends React.Component {
 
   render () {
     const { recipe } = this.props;
+    const { writer, creator, title, description } = recipe;
     const stepText = recipe.steps.map((s, i) => [i+1, s.text].join(" ")).join(" ");
+
+    let personText;
+    console.log(creator)
+    console.log(writer)
+    if (writer.id == creator.id) {
+      personText = <React.Fragment>Written and created by {<Avatar user={writer} />}</React.Fragment>;
+    } else {
+      personText = <React.Fragment>Written by {<Avatar user={writer} />}. Created by {<Avatar user={creator} />}.</React.Fragment>;
+    }
 
     return (
       <div className='recipe-container' onClick={this.handleRecipeClick}>
-        <div className='recipe-title' dangerouslySetInnerHTML={{__html: recipe.title || "Untitled"}}></div>
+        <div className='recipe-title' dangerouslySetInnerHTML={{__html: title || "Untitled"}}></div>
         <div className='recipe-description' ref={this.descContainerRef}>
-          <div className='text' ref={this.descTextRef} dangerouslySetInnerHTML={{__html: recipe.description + " " + stepText }}></div>
+          <div className='text' ref={this.descTextRef} dangerouslySetInnerHTML={{__html: description + " " + stepText }}></div>
         </div>
-        <div className='recipe-people'>Written by {<Avatar user={recipe.writer} />}</div>
+        <div className='recipe-people'>{personText}</div>
       </div>
     );
   }

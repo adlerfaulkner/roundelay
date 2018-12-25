@@ -18,6 +18,9 @@
 #
 
 class User < ApplicationRecord
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
+
   authenticates_with_sorcery!
 
   has_many :created_recipes, class_name: 'Recipe', foreign_key: :creator_id
@@ -46,6 +49,16 @@ class User < ApplicationRecord
     presence: { message: "Please repeat the same password."}
 
   before_create :set_username
+
+  settings index: { number_of_shards: 1 } do
+    mappings dynamic: 'false' do
+      indexes :name, type: :text, analyzer: :english
+    end
+  end
+
+  def as_indexed_json(options={})
+    { name: name }
+  end
 
   def as_json(*)
     super.except("updated_at", "created_at", "salt",

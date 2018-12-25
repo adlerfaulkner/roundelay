@@ -23,11 +23,18 @@ class RecipeView extends React.Component {
       </div>;
     });
 
+    let personText;
+    if (writer.id == creator.id) {
+      personText = <React.Fragment>Written and created by {<Avatar user={writer} />}</React.Fragment>;
+    } else {
+      personText = <React.Fragment>Written by {<Avatar user={writer} />}. Created by {<Avatar user={creator} />}.</React.Fragment>;
+    }
+
     return (
       <div className='recipe-view page-width recipe-page'>
         <div className='title-container' dangerouslySetInnerHTML={{__html: displayTitle}}></div>
         <div className='description-container' dangerouslySetInnerHTML={{__html:description}}></div>
-        <div className='person-container'>Written by {<Avatar user={writer} />}</div>
+        <div className='person-container'>{personText}</div>
         <div className='recipe-body'>
           <div className='section ingredients-section'>
             { ingredientsList }

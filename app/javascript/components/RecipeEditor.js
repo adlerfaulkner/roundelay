@@ -57,7 +57,10 @@ class RecipeEditor extends React.Component {
       }),
       prevSteps: recipe.steps,
       creator: recipe.creator,
-      writer: recipe.writer
+      writer: recipe.writer,
+      creatorSearchText: recipe.creator.name,
+      creatorSearchOpen: false,
+      creatorSearchResults: []
     }
     const placeholders = TitlePlaceholder();
     this.ingredientPlaceholders = IngredientPlaceholders();
@@ -79,6 +82,11 @@ class RecipeEditor extends React.Component {
     this.handleStepDelete = this.handleStepDelete.bind(this);
     this.handleRecipeChange = this.handleRecipeChange.bind(this);
     this.saveRecipe = this.saveRecipe.bind(this);
+    this.handleCreatorSearchChange = this.handleCreatorSearchChange.bind(this);
+    this.handleCreatorSearchFocus = this.handleCreatorSearchFocus.bind(this);
+    this.handleCreatorSearchBlur = this.handleCreatorSearchBlur.bind(this);
+    this.handleCreatorSearchResultClick = this.handleCreatorSearchResultClick.bind(this);
+    this.creatorSearch = this.creatorSearch.bind(this);
   }
   handleRecipeChange() {
     const self = this;
@@ -99,7 +107,7 @@ class RecipeEditor extends React.Component {
     this.setState({ saving: true });
     this.props.onSaveStateUpdate("Saving...");
     const self = this;
-    const { id, title, description, ingredients, steps, prevIngredients, prevSteps } = this.state;
+    const { id, title, description, ingredients, steps, prevIngredients, prevSteps, creator } = this.state;
 
     let ingredients_to_delete = [];
     let steps_to_delete = [];
@@ -149,6 +157,7 @@ class RecipeEditor extends React.Component {
         description: description,
         ingredients_attributes: ingredientsForParams,
         steps_attributes: stepsForParams,
+        creator_id: creator.id
       },
       ingredients_to_delete: ingredients_to_delete,
       steps_to_delete: steps_to_delete
@@ -287,6 +296,47 @@ class RecipeEditor extends React.Component {
     });
     this.handleRecipeChange();
   }
+  handleCreatorSearchChange(e) {
+    const val = e.target.value;
+    const self = this;
+    this.setState({ creatorSearchOpen: true, creatorSearchText: val });
+    if (this._creatorSearchTimeout) {
+      clearTimeout(this._creatorSearchTimeout);
+    }
+    this._creatorSearchTimeout = setTimeout(function() {
+      self.creatorSearch(val);
+    }, 300);
+  }
+  handleCreatorSearchFocus() {
+    this.setState({ creatorSearchOpen: true });
+  }
+  handleCreatorSearchBlur() {
+    const self = this;
+    setTimeout(function() {
+      self.setState((prevState) => { return {creatorSearchOpen: false, creatorSearchText: prevState.creator.name } });
+    },100);
+  }
+  creatorSearch(searchText) {
+    const self = this;
+    this._creatorSearch = $.get({
+      url: '/api/v1/users',
+      data: { q: searchText },
+      dataType: 'JSON',
+      success: function(respData) {
+        self.setState({ creatorSearchResults: respData });
+      }
+    });
+  }
+  handleCreatorSearchResultClick(e, user) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({
+      creatorSearchText: user.name,
+      creatorSearchOpen: false,
+      creator: user
+    });
+    this.handleRecipeChange();
+  }
   componentDidMount() {
     const self = this;
     const { recipe } = this.props;
@@ -298,7 +348,9 @@ class RecipeEditor extends React.Component {
     }
   }
   render () {
-    const { title, description, ingredients, steps, creator, writer } = this.state;
+    const { title, description, ingredients, steps, creator, writer,
+      creatorSearchText, creatorSearchResults, creatorSearchOpen } = this.state;
+
     let titlePlaceholderStyle;
     if (title.length > 0) {
       titlePlaceholderStyle = { display: 'none' };
@@ -332,6 +384,20 @@ class RecipeEditor extends React.Component {
         onDelete={this.handleStepDelete}/>;
     });
 
+    const creatorContainer = <div className='creator-container'>
+      Created by
+      <input type='text' value={creatorSearchText} placeholder="..."
+        onChange={this.handleCreatorSearchChange}
+        onFocus={this.handleCreatorSearchFocus}
+        onBlur={this.handleCreatorSearchBlur} />
+      { (creatorSearchOpen && creatorSearchResults.length > 0) && <div className='creator-search-dropdown'>
+        {creatorSearchResults.map((user) => {
+          return <Avatar key={user.id} user={user} onClickHandler={this.handleCreatorSearchResultClick}/>;
+        })}
+      </div>
+      }
+    </div>
+
     return (
       <div className='recipe-editor page-width recipe-page'>
         <div className='title-container contenteditable-container'>
@@ -350,6 +416,7 @@ class RecipeEditor extends React.Component {
             onReturn={this.handleDescReturn}
             onDelete={this.handleDescDelete}/>
         </div>
+        <div className='person-container'>Written by {<Avatar user={writer} />}. {creatorContainer}</div>
         <div className='recipe-body'>
           <div className='section ingredients-section'>
             { ingredientsList }

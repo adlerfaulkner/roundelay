@@ -798,11 +798,46 @@ body, html {
     min-height: 20px;
     width: 100%;
   }
-  .description-container {
-    margin: 15px auto 70px auto;
-  }
   .creator-container {
+    position: relative;
     display: inline;
+    input {
+      margin-left: 4px;
+      outline: none;
+      border:none;
+      @extend .description-font;
+      font-size: 16px;
+    }
+    .creator-search-dropdown {
+      left:80px;
+      min-width: 200px;
+      position: absolute;
+      top:100%;
+      padding: 5px 0;
+      background-color: white;
+      -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0 1px rgba(0,0,0,.35);
+      -moz-box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0 1px rgba(0,0,0,.35);
+      box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0 1px rgba(0,0,0,.35);
+      @include rounded-corners(4px);
+
+      .user-avatar {
+        text-align: left;
+        width:100%;
+        min-width: 100%;
+        display: block;
+        padding: 5px 12px;
+        @extend .base-font;
+        color:$oil;
+        white-space: nowrap;
+        outline: none;
+        border:none;
+
+        &:hover {
+          background-color: $white-smoke;
+          color: $oil;
+        }
+      }
+    }
   }
 }
 @media only screen and (min-width: 700px ) {

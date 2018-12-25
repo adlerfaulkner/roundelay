@@ -25,6 +25,7 @@ class Recipe < ApplicationRecord
   belongs_to :writer, class_name: 'User'
 
   validates_presence_of :writer
+  validates_presence_of :creator
   validates :ingredients, presence: true
   validates :steps, presence: true
 
