@@ -247,7 +247,6 @@ class App extends React.Component {
     });
   }
   refreshRecipes(e) {
-    console.log('rezise')
     const self = this;
     if (this._resizeRefreshTimeout) {
       clearTimeout(this._resizeRefreshTimeout);
