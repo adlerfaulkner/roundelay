@@ -1,35 +1,36 @@
+ruby '2.5.7'
 source 'https://rubygems.org'
 
-gem 'rails',        '5.0.3'
-gem 'puma',         '3.9.1'
-gem 'sass-rails',   '5.0.6'
-gem 'uglifier',     '3.2.0'
-gem 'coffee-rails', '4.2.2'
-gem 'jquery-rails', '4.3.1'
-gem 'turbolinks',   '5.0.1'
-gem 'jbuilder',     '2.6.4'
-gem 'sorcery',      '0.12.0'
-gem 'webpacker',    '3.5.5'
-gem 'react-rails',  '2.4.5'
-gem 'kaminari',     '1.1.1'
-gem 'elasticsearch-model', '6.0.0'
-gem 'elasticsearch-rails', '6.0.0'
+gem 'rails',        '5.2.4.1'
+gem 'puma'
+gem 'sass-rails'
+gem 'uglifier'
+gem 'coffee-rails'
+gem 'jquery-rails'
+gem 'turbolinks'
+gem 'jbuilder'
+gem 'sorcery'
+gem 'webpacker'
+gem 'react-rails'
+gem 'kaminari'
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
 
 group :development, :test do
 	gem 'faker', '> 1.5.0'
   gem "shoulda"
 
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
 
-	gem 'sqlite3',      '1.3.13'
-  gem 'byebug', '9.0.6', platform: :mri
+	gem 'sqlite3'
+  gem 'byebug'
   gem 'annotate'
 end
 
 group :production do
-  gem 'pg', '0.20.0'
-  gem 'bonsai-elasticsearch-rails', '~> 6'
+  gem 'pg'
+  gem 'bonsai-elasticsearch-rails'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

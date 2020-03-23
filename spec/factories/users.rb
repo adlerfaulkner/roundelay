@@ -17,11 +17,11 @@
 #  reset_password_email_sent_at    :datetime
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
     name { Faker::Name.name }
-    password "password"
-    password_confirmation "password"
+    password { "password" }
+    password_confirmation { "password" }
   end
 end

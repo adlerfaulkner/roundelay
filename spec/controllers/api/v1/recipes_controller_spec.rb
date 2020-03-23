@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::recipesController, type: :controller do
+RSpec.describe Api::V1::RecipesController, type: :controller do
   describe "GET #index" do
     it "always returns no errors" do
       get :index
@@ -10,7 +10,7 @@ RSpec.describe Api::V1::recipesController, type: :controller do
 
   describe "POST #create" do
     before :each do
-      @user = FactoryGirl.create(:user)
+      @user = FactoryBot.create(:user)
     end
     context "when logged out" do
       it 'redirects' do
@@ -48,7 +48,7 @@ RSpec.describe Api::V1::recipesController, type: :controller do
 
   describe "PATCH :update" do
     before :each do
-      @recipe = FactoryGirl.create(:recipe)
+      @recipe = FactoryBot.create(:recipe)
       @user = @recipe.writer
     end
     context "when logged out" do
@@ -66,7 +66,7 @@ RSpec.describe Api::V1::recipesController, type: :controller do
     end
     context "without permissions" do
       it "returns errors" do
-        @user = FactoryGirl.create(:user)
+        @user = FactoryBot.create(:user)
         login_user
         patch :update, params: { id: @recipe.id }
         expect(response.status).to eq(403)

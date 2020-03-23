@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Step, type: :model do
-  let(:recipe) { FactoryGirl.create(:recipe) }
+  let(:recipe) { FactoryBot.create(:recipe) }
   subject { recipe.steps.first }
 
   describe "Validations" do

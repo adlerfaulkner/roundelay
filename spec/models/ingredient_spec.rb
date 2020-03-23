@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Ingredient, type: :model do
-  let(:recipe) { FactoryGirl.create(:recipe) }
+  let(:recipe) { FactoryBot.create(:recipe) }
   subject { recipe.ingredients.first }
 
   describe "Validations" do
