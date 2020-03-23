@@ -30,6 +30,7 @@ config/initializers/secret_token.rb
 
 # Ignore Byebug command history file.
 .byebug_history
+/public/assets
 /public/packs
 /public/packs-test
 /node_modules
